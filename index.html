@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — Agência de X-Inteligência e Operações Multimodais</title>
+  <style>
+    :root{
+      --bg:#020403;
+      --bg2:#07110b;
+      --panel:rgba(5,18,10,.78);
+      --panel-strong:rgba(7,25,14,.92);
+      --line:rgba(89,255,156,.18);
+      --line-strong:rgba(89,255,156,.38);
+      --text:#d8ffe8;
+      --muted:#8ec9a7;
+      --accent:#59ff9c;
+      --accent-2:#00ff66;
+      --glow:0 0 10px rgba(89,255,156,.25),0 0 30px rgba(89,255,156,.12);
+      --shadow:0 18px 60px rgba(0,0,0,.55);
+      --danger:#9cffc4;
+      --radius:24px;
+      --radius-sm:16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, Segoe UI, Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(0,255,102,.08), transparent 30%),
+        radial-gradient(circle at 80% 0%, rgba(89,255,156,.06), transparent 25%),
+        linear-gradient(180deg, #010201, #020403 22%, #041009 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,.02) 0,
+          rgba(255,255,255,.02) 1px,
+          transparent 2px,
+          transparent 4px
+        );
+      mix-blend-mode:soft-light;
+      opacity:.18;
+      z-index:0;
+    }
+
+    .matrix-rain{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      opacity:.11;
+      background-image:
+        linear-gradient(transparent 0%, rgba(89,255,156,.08) 50%, transparent 100%),
+        repeating-linear-gradient(90deg, transparent 0 40px, rgba(89,255,156,.06) 41px 42px, transparent 43px 90px);
+      animation:drift 16s linear infinite;
+    }
+
+    @keyframes drift{
+      from{transform:translateY(-2%)}
+      to{transform:translateY(2%)}
+    }
+
+    .wrap{position:relative; z-index:1; width:min(1280px, calc(100% - 32px)); margin:0 auto;}
+
+    .hero{
+      padding:56px 0 26px;
+    }
+
+    .hero-card{
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--line-strong);
+      background:linear-gradient(180deg, rgba(4,12,8,.9), rgba(6,20,12,.74));
+      border-radius:32px;
+      box-shadow:var(--shadow), var(--glow);
+      padding:34px;
+    }
+
+    .hero-card::after{
+      content:"";
+      position:absolute;
+      inset:auto -10% -35% auto;
+      width:420px; height:420px;
+      background:radial-gradient(circle, rgba(89,255,156,.12), transparent 62%);
+      filter:blur(20px);
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:8px 14px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--accent);
+      font:600 12px var(--mono);
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      background:rgba(0,0,0,.22);
+      box-shadow:inset 0 0 20px rgba(89,255,156,.06);
+    }
+
+    h1{
+      font-size:clamp(30px, 5.8vw, 64px);
+      margin:18px 0 10px;
+      line-height:1.03;
+      text-shadow:0 0 22px rgba(89,255,156,.14);
+      letter-spacing:.04em;
+    }
+
+    .subtitle{
+      max-width:900px;
+      color:var(--muted);
+      font-size:1.05rem;
+      line-height:1.7;
+    }
+
+    .grid-top{
+      margin-top:24px;
+      display:grid;
+      grid-template-columns:1.6fr .95fr;
+      gap:18px;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(8,24,14,.72), rgba(4,14,8,.82));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      backdrop-filter:blur(10px);
+    }
+
+    .panel h2, .panel h3{
+      margin:0 0 14px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font:700 14px var(--mono);
+      color:var(--accent);
+    }
+
+    .terminal{
+      font-family:var(--mono);
+      background:#010503;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
+      min-height:240px;
+      box-shadow:inset 0 0 22px rgba(89,255,156,.04);
+    }
+
+    .terminal .line{margin:.45rem 0; color:#caffde}
+    .terminal .prompt{color:var(--accent)}
+    .terminal .dim{color:#7da78d}
+
+    nav{
+      position:sticky;
+      top:12px;
+      z-index:4;
+      margin:16px 0 24px;
+    }
+
+    .nav-inner{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:10px;
+      border:1px solid var(--line);
+      background:rgba(2,10,5,.78);
+      backdrop-filter:blur(14px);
+      border-radius:20px;
+      box-shadow:var(--glow);
+    }
+
+    .nav-inner a{
+      text-decoration:none;
+      color:var(--text);
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid transparent;
+      font:600 13px var(--mono);
+      transition:.2s ease;
+      letter-spacing:.04em;
+    }
+
+    .nav-inner a:hover{
+      border-color:var(--line-strong);
+      color:var(--accent);
+      background:rgba(89,255,156,.06);
+      transform:translateY(-1px);
+    }
+
+    section{margin:18px 0 22px;}
+
+    .cards{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px;}
+    .card{padding:24px; border-radius:var(--radius); background:var(--panel); border:1px solid var(--line); box-shadow:var(--shadow);}
+    .card h3{margin:0 0 16px; color:var(--accent); font:700 14px var(--mono); text-transform:uppercase; letter-spacing:.08em;}
+    .card p{color:var(--muted); line-height:1.75; margin:0 0 12px;}
+    .card ul{margin:0; padding-left:18px; color:var(--text); line-height:1.85}
+    .card li{margin-bottom:6px}
+
+    .mission-template{
+      background:linear-gradient(180deg, rgba(6,22,13,.92), rgba(2,9,5,.98));
+      border:1px solid var(--line-strong);
+      border-radius:26px;
+      padding:24px;
+      white-space:pre-wrap;
+      font-family:var(--mono);
+      line-height:1.8;
+      box-shadow:var(--glow), var(--shadow);
+    }
+
+    .chat-shell{
+      display:grid;
+      grid-template-columns:320px 1fr;
+      gap:18px;
+    }
+
+    .dictionary-list{
+      max-height:640px;
+      overflow:auto;
+      padding-right:6px;
+    }
+
+    .dict-btn{
+      width:100%; text-align:left;
+      background:rgba(89,255,156,.03);
+      color:var(--text);
+      border:1px solid var(--line);
+      padding:12px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font:600 13px var(--mono);
+      margin-bottom:10px;
+      transition:.2s ease;
+    }
+
+    .dict-btn:hover, .dict-btn.active{
+      color:var(--accent);
+      border-color:var(--line-strong);
+      background:rgba(89,255,156,.08);
+      box-shadow:0 0 16px rgba(89,255,156,.08);
+    }
+
+    .chat-box{
+      display:flex;
+      flex-direction:column;
+      min-height:640px;
+      background:linear-gradient(180deg, rgba(6,18,11,.88), rgba(3,11,6,.98));
+      border:1px solid var(--line);
+      border-radius:26px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    .chat-head{
+      padding:18px 20px;
+      border-bottom:1px solid var(--line);
+      background:rgba(1,8,4,.7);
+      display:flex; justify-content:space-between; gap:12px; align-items:center;
+    }
+
+    .status{font:700 12px var(--mono); color:var(--accent); letter-spacing:.14em; text-transform:uppercase;}
+    .status-note{color:var(--muted); font-size:.93rem}
+
+    .chat-log{
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      flex:1;
+      overflow:auto;
+      background:
+        radial-gradient(circle at top, rgba(89,255,156,.04), transparent 40%),
+        linear-gradient(180deg, rgba(0,0,0,.08), transparent 35%);
+    }
+
+    .bubble{
+      max-width:85%;
+      padding:14px 16px;
+      border-radius:18px;
+      line-height:1.7;
+      border:1px solid var(--line);
+      box-shadow:0 10px 24px rgba(0,0,0,.2);
+    }
+
+    .user{align-self:flex-end; background:rgba(89,255,156,.08)}
+    .bot{align-self:flex-start; background:rgba(0,0,0,.24)}
+
+    .chat-input{
+      border-top:1px solid var(--line);
+      padding:16px;
+      display:flex;
+      gap:12px;
+      background:rgba(1,9,5,.82);
+    }
+
+    .chat-input input{
+      flex:1;
+      background:#021008;
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px 16px;
+      font:500 14px var(--sans);
+      outline:none;
+    }
+
+    .chat-input input:focus{border-color:var(--line-strong); box-shadow:0 0 0 4px rgba(89,255,156,.08)}
+
+    button.send, .ghost{
+      border:1px solid var(--line-strong);
+      background:linear-gradient(180deg, rgba(89,255,156,.14), rgba(89,255,156,.06));
+      color:var(--text);
+      padding:14px 18px;
+      border-radius:16px;
+      cursor:pointer;
+      font:700 12px var(--mono);
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      transition:.2s ease;
+    }
+
+    button.send:hover, .ghost:hover{transform:translateY(-1px); box-shadow:var(--glow)}
+
+    .mini-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:18px;}
+    .mini{padding:16px; border-radius:18px; border:1px solid var(--line); background:rgba(0,0,0,.18)}
+    .mini strong{display:block; color:var(--accent); margin-bottom:8px; font:700 12px var(--mono); letter-spacing:.08em; text-transform:uppercase;}
+    .mini span{color:var(--muted); line-height:1.6; font-size:.96rem}
+
+    footer{padding:18px 0 42px; color:var(--muted); text-align:center; font-size:.95rem}
+
+    .badge-grid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:18px}
+    .badge{border:1px solid var(--line); border-radius:16px; padding:14px; background:rgba(89,255,156,.03); font-family:var(--mono); font-size:.84rem; color:var(--text)}
+    .badge b{color:var(--accent)}
+
+    @media (max-width: 1020px){
+      .grid-top,.chat-shell,.cards{grid-template-columns:1fr}
+      .badge-grid,.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width: 680px){
+      .wrap{width:min(100% - 20px, 1280px)}
+      .hero-card{padding:22px}
+      .badge-grid,.mini-grid{grid-template-columns:1fr}
+      .nav-inner a{width:100%; text-align:center}
+      .chat-head{align-items:flex-start; flex-direction:column}
+      .chat-input{flex-direction:column}
+      .bubble{max-width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="matrix-rain"></div>
+
+  <div class="wrap">
+    <header class="hero" id="topo">
+      <div class="hero-card">
+        <span class="eyebrow">[ Rede Segura ] • [ Núcleo Operacional ] • [ Investigação Remota ]</span>
+        <h1>Ａ.Ｘ.Ｉ.Ｏ.Ｍ.</h1>
+        <p class="subtitle">
+          <strong>𝘈𝘨𝘦̂𝘯𝘤𝘪𝘢 𝘥𝘦 𝘟-𝘐𝘯𝘵𝘦𝘭𝘪𝘨𝘦̂𝘯𝘤𝘪𝘢 𝘦 𝘖𝘱𝘦𝘳𝘢𝘤̧𝘰̃𝘦𝘴 𝘔𝘶𝘭𝘵𝘪𝘮𝘰𝘥𝘢𝘪𝘴</strong><br>
+          Um portal visual para organização de investigações, raciocínio evidencial, triagem OSINT, geolocalização, cronologia de casos e protocolos éticos. O modo <em>Conversa</em> abaixo é apenas um dicionário interativo com respostas pré-definidas — não é uma IA real.
+        </p>
+
+        <div class="grid-top">
+          <div class="panel">
+            <h2>QG Central</h2>
+            <p style="line-height:1.8; color:var(--muted); margin:0">
+              Este é o QG central para investigadores. Aqui, a intuição encontra a precisão. Para quem está começando, o caminho para a resolução de casos se baseia na metodologia de investigação remota, registro disciplinado de evidências e montagem de hipóteses auditáveis.
+            </p>
+            <div class="badge-grid">
+              <div class="badge"><b>OSINT</b><br>Buscas avançadas, Dorks, cruzamento de fontes.</div>
+              <div class="badge"><b>Geo</b><br>Maps, Earth e Street View como extensões dos olhos.</div>
+              <div class="badge"><b>Dados</b><br>Padrões, redes, perfis, sinais e correlação.</div>
+              <div class="badge"><b>Cronologia</b><br>Linha do tempo para detectar lacunas.</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>Console de Estado</h2>
+            <div class="terminal" id="bootLog">
+              <div class="line"><span class="prompt">axiom@core:~$</span> boot --secure</div>
+              <div class="line"><span class="dim">[OK]</span> Canal seguro inicializado</div>
+              <div class="line"><span class="dim">[OK]</span> Módulos OSINT carregados</div>
+              <div class="line"><span class="dim">[OK]</span> Regras éticas vinculadas</div>
+              <div class="line"><span class="dim">[OK]</span> Dicionário conversacional disponível</div>
+              <div class="line"><span class="prompt">axiom@core:~$</span> status</div>
+              <div class="line">Pronto para investigação organizada.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <nav>
+      <div class="nav-inner">
+        <a href="#pilares">Pilares</a>
+        <a href="#ferramentas">Ferramentas</a>
+        <a href="#protocolo">Protocolo</a>
+        <a href="#diretrizes">Diretrizes</a>
+        <a href="#missao">Missão</a>
+        <a href="#conversa">Conversa</a>
+      </div>
+    </nav>
+
+    <section id="pilares" class="cards">
+      <article class="card">
+        <h3>🔎 Pilares da Investigação</h3>
+        <ul>
+          <li><strong>OSINT:</strong> domine buscas avançadas do Google e Google Dorks.</li>
+          <li><strong>Geolocalização:</strong> use Google Maps, Earth e Street View como extensões dos seus olhos.</li>
+          <li><strong>Análise de Dados:</strong> monitore redes sociais, rastreie padrões e cruze informações.</li>
+          <li><strong>Linha do Tempo:</strong> organize os fatos cronologicamente para identificar lacunas.</li>
+        </ul>
+      </article>
+
+      <article class="card" id="ferramentas">
+        <h3>🛠️ Ferramentas Recomendadas</h3>
+        <ul>
+          <li><strong>Busca &amp; Identificação:</strong> Maltego, Shodan, PimEyes, TinEye.</li>
+          <li><strong>Arquivamento:</strong> Wayback Machine para preservar evidências antes que desapareçam.</li>
+          <li><strong>Gestão:</strong> documente tudo em arquivos compartilhados e faça backups em tempo real.</li>
+          <li><strong>Análise de Redes:</strong> Gephi ou NetworkX para conexões complexas.</li>
+          <li><strong>Forense Digital:</strong> EnCase e FTK para extração e triagem de evidências autorizadas.</li>
+          <li><strong>Geografia / SIG:</strong> ArcGIS ou QGIS para padrões e distribuição geográfica.</li>
+          <li><strong>Multimídia:</strong> Adobe Premiere Pro ou DaVinci Resolve para revisão de vídeo.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <h3>⚠️ Lembrete Ético</h3>
+        <p>
+          A ética é a base do trabalho investigativo. Respeite a privacidade, mantenha a integridade dos dados e foque na justiça. Investigue com cautela, registre limites metodológicos e nunca invada sistemas nem acesse dados privados sem autorização.
+        </p>
+      </article>
+      <article class="card">
+        <h3>🧠 Método do Investigador</h3>
+        <p>
+          Anote hipóteses sem julgá-las a priori, separe fatos de interpretações, teste ideias com evidências verificáveis, compare hipóteses concorrentes, registre falhas de raciocínio e priorize dados frios sobre impressões subjetivas.
+        </p>
+      </article>
+    </section>
+
+    <section id="protocolo" class="cards">
+      <article class="card">
+        <h3>📋 Protocolo de Entrada — A.X.I.O.M.</h3>
+        <ul>
+          <li><strong>Identificação do Agente:</strong> informe seu codinome e nível de acesso.</li>
+          <li><strong>Registro do Caso:</strong> nome do caso e breve resumo do objetivo da investigação.</li>
+          <li><strong>Coleta Inicial (OSINT):</strong> buscas avançadas via Google Dorks, Wayback Machine, PimEyes ou TinEye.</li>
+          <li><strong>Mapeamento Geográfico:</strong> análise inicial via Google Earth/Maps.</li>
+          <li><strong>Linha do Tempo:</strong> estabeleça eventos conhecidos em ordem cronológica.</li>
+          <li><strong>Gerenciamento:</strong> organize os dados em sistemas como CaseMap ou Relativity.</li>
+          <li><strong>Compromisso Ético:</strong> confirme que não houve invasão de sistemas ou acesso indevido.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>📡 Procedimentos Operacionais</h3>
+        <ul>
+          <li>Coleta de depoimentos por fóruns, DMs e grupos com segurança e consentimento.</li>
+          <li>Uso de IA e aprendizado de máquina apenas para identificar padrões e apoiar análise humana.</li>
+          <li>Documentação rigorosa, comunicação segura e validação cruzada de informações.</li>
+          <li>Backups de tela, cadeia de custódia e trilha de auditoria sempre que possível.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section id="diretrizes" class="cards">
+      <article class="card">
+        <h3>📜 Diretrizes Classificadas — Protocolos de Investigação</h3>
+        <ul>
+          <li><strong>Pesquisa Avançada:</strong> Google Dorks para filtragem profunda de dados públicos.</li>
+          <li><strong>Geolocalização:</strong> Earth e Street View para análise estrutural de locais.</li>
+          <li><strong>Monitoramento Digital:</strong> redes sociais, feeds públicos e câmeras conforme a necessidade do caso.</li>
+          <li><strong>Organização de Volume:</strong> casos densos devem ser processados via CaseMap ou Relativity.</li>
+          <li><strong>Integridade Cronológica:</strong> toda investigação deve ter linha do tempo rigorosa.</li>
+          <li><strong>Validação Técnica:</strong> métricas, validação cruzada e documentação das limitações do modelo.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>🔐 Conduta Ética e Segurança</h3>
+        <ul>
+          <li><strong>Sigilo:</strong> mantenha sempre um canal de comunicação seguro.</li>
+          <li><strong>Legalidade:</strong> respeite a privacidade e a autorização expressa.</li>
+          <li><strong>Documentação:</strong> registre cada passo com evidências e backups.</li>
+          <li><strong>Interdisciplinaridade:</strong> envolva ciência de dados, engenharia e geologia estrutural quando necessário.</li>
+          <li><strong>Critérios de Inviabilidade:</strong> dados falhos ou de baixa qualidade devem ser registrados imediatamente.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Infraestrutura e Governança</h2>
+      <div class="mini-grid">
+        <div class="mini"><strong>Dados</strong><span>PostGIS, GeoPandas, QGIS, Neo4j, ArangoDB, NetworkX, pipelines ETL/ELT e catálogo de dados.</span></div>
+        <div class="mini"><strong>ML / IA</strong><span>PyTorch, TensorFlow, scikit-learn, spaCy e transformers para apoio analítico com humano no loop.</span></div>
+        <div class="mini"><strong>Segurança</strong><span>RBAC, criptografia, logs de auditoria, Vault, políticas de retenção e conformidade LGPD/GDPR.</span></div>
+      </div>
+    </section>
+
+    <section id="missao">
+      <div class="mission-template">📍 TÍTULO DA MISSÃO: [Nome do Caso]
+📁 ID DO PROJETO: [Ex: #000]
+👤 RESPONSÁVEL: [Nome do Agente]
+
+🎯 OBJETIVO:
+[Descreva o que deve ser alcançado]
+
+🔎 ETAPAS DE INVESTIGAÇÃO (Baseado em OSINT):
+
+    [ ] Pesquisa Online: [Fontes/Links]
+    [ ] Geolocalização: [Detalhes de locais]
+    [ ] Análise de Redes: [Perfis/Interações]
+    [ ] Coleta de Provas: [Prints/Depoimentos]
+    [ ] Linha do Tempo: [Eventos cronológicos]
+
+🛠️ FERRAMENTAS RECOMENDADAS:
+[Ex: Maltego, Google Dorks, Wayback Machine]
+
+⚠️ OBSERVAÇÕES / NOTAS:
+[Privacidade e Ética: Não invada sistemas sem autorização.]</div>
+    </section>
+
+    <section id="conversa" class="panel">
+      <h2>Modo Conversa — Dicionário Operacional</h2>
+      <p style="margin:0 0 18px; color:var(--muted); line-height:1.75">
+        Este módulo responde com base em um dicionário fixo de termos, protocolos e conceitos de investigação. Não gera raciocínio autônomo e não substitui análise humana. Clique em um termo ou digite uma palavra-chave.
+      </p>
+
+      <div class="chat-shell">
+        <aside class="dictionary-list" id="dictionaryList"></aside>
+
+        <div class="chat-box">
+          <div class="chat-head">
+            <div>
+              <div class="status">Módulo de Conversa • Simulado</div>
+              <div class="status-note">Baseado em palavras-chave, definições e protocolos pré-carregados.</div>
+            </div>
+            <button class="ghost" id="clearChat">Limpar Log</button>
+          </div>
+
+          <div class="chat-log" id="chatLog">
+            <div class="bubble bot">Saudações, agente. Consulte termos como <strong>OSINT</strong>, <strong>hipótese</strong>, <strong>triangulação</strong>, <strong>ética</strong>, <strong>Watergate</strong>, <strong>Enron</strong>, <strong>LGPD</strong> ou <strong>linha do tempo</strong>.</div>
+          </div>
+
+          <div class="chat-input">
+            <input id="userInput" type="text" placeholder="Digite um termo, ferramenta ou conceito..." />
+            <button class="send" id="sendBtn">Consultar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — Agência de X-Inteligência e Operações Multimodais • Interface estática • investigação organizada, ética e auditável.
+    </footer>
+  </div>
+
+  <script>
+    const dictionary = {
+      "osint": "OSINT é a investigação com fontes abertas. Envolve buscas avançadas, cruzamento de registros públicos, análise de perfis, imagens, arquivos e vestígios digitais com foco em evidências verificáveis.",
+      "geolocalização": "Geolocalização é o uso de mapas, imagens de satélite, Street View e referências visuais para analisar locais, rotas, estruturas e compatibilidade espacial de uma hipótese.",
+      "google dorks": "Google Dorks são operadores avançados de busca usados para filtrar resultados públicos de forma mais precisa, como site:, filetype:, intitle: e combinações booleanas.",
+      "maltego": "Maltego é uma ferramenta de análise de conexões e entidades, útil para visualizar relações entre pessoas, domínios, contas, organizações e eventos.",
+      "shodan": "Shodan é um mecanismo de busca voltado a serviços e dispositivos expostos na internet. Deve ser usado apenas para mapeamento autorizado e pesquisa legítima.",
+      "pimeyes": "PimEyes é uma ferramenta de busca reversa facial. Seu uso exige atenção ética, respeito à privacidade e conformidade legal.",
+      "tineye": "TinEye é uma ferramenta de busca reversa de imagens que ajuda a localizar versões anteriores, reuploads e contextos de circulação de uma imagem.",
+      "wayback machine": "Wayback Machine arquiva versões históricas de páginas. É útil para preservar evidências antes que conteúdos sejam apagados ou alterados.",
+      "linhado tempo": "Linha do tempo é a organização cronológica dos fatos. Ela permite detectar lacunas, contradições, intervalos suspeitos e momentos-chave da investigação.",
+      "linha do tempo": "Linha do tempo é a organização cronológica dos fatos. Ela permite detectar lacunas, contradições, intervalos suspeitos e momentos-chave da investigação.",
+      "hipótese": "Hipótese é uma linha de investigação provisória. Ela orienta a coleta de dados, mas não deve ser confundida com verdade. Deve ser confirmada ou descartada por evidências.",
+      "evidência": "Evidência é um dado verificável que sustenta uma conclusão. O ideal é registrar fonte, contexto, horário, cadeia de custódia e limitações interpretativas.",
+      "triangulação": "Triangulação é confirmar uma conclusão por meio de múltiplas fontes independentes. Quanto mais convergência entre fontes confiáveis, maior a robustez da análise.",
+      "ética": "Ética investigativa é curiosidade sem dano. Exige respeito à privacidade, legalidade, integridade dos dados, consentimento quando pertinente e recusa a invasões ou abusos.",
+      "integridade": "Integridade é a adesão a princípios e fatos mesmo sob pressão. No contexto investigativo, é manter registros honestos, não distorcer evidências e reconhecer incertezas.",
+      "confidencialidade": "Confidencialidade é a proteção de informações sensíveis. Ela exige controle de acesso, logs, necessidade de saber e canais seguros entre agentes.",
+      "lgpd": "LGPD é a Lei Geral de Proteção de Dados. Ela estrutura regras de tratamento de dados pessoais, princípios de finalidade, necessidade, segurança e responsabilização.",
+      "transparência": "Transparência é tornar processos, decisões e critérios visíveis e auditáveis. Em investigação séria, isso inclui metodologia clara, versão de dados e justificativa das conclusões.",
+      "accountability": "Accountability é responsabilização pública. Significa poder explicar, justificar e responder pelas decisões, ações e impactos de uma investigação ou gestão.",
+      "observador autodidata": "Observador autodidata é quem aprende por perguntas e verificação, não por autoridade cega. Registra fatos, duvida de certezas fáceis e revisa conclusões com novas evidências.",
+      "raciocínio evidencial": "Raciocínio evidencial é pensar com base em fatos verificáveis. Exige separar fato, hipótese e opinião, testar contraprovas e ajustar a explicação ao peso dos dados.",
+      "coleta de fatos": "Coleta de fatos é reunir fontes primárias, observações diretas, documentos verificáveis e dados quantificáveis, sempre distinguindo observação de interpretação.",
+      "sistema de anotações": "Sistema de anotações é a estrutura que organiza fatos, hipóteses, fontes, datas e evidências contrárias. Sem registro claro, a investigação perde reprodutibilidade.",
+      "protocolo": "O protocolo de entrada da A.X.I.O.M. pede identificação do agente, registro do caso, coleta OSINT inicial, mapeamento geográfico, linha do tempo, gerenciamento dos dados e compromisso ético.",
+      "casemap": "CaseMap é uma ferramenta de organização de casos, usada para estruturar fatos, fontes, pessoas, cronologias e relações entre evidências.",
+      "relativity": "Relativity é uma plataforma de e-discovery e gestão de grandes volumes documentais, útil para revisão, classificação e rastreabilidade de evidências digitais.",
+      "qgis": "QGIS é uma plataforma de informação geográfica que ajuda a mapear ocorrências, padrões espaciais e correlações geográficas em investigações.",
+      "networkx": "NetworkX é uma biblioteca para modelagem e análise de grafos. Pode apoiar a visualização de redes de relação entre contas, entidades e interações.",
+      "watergate": "Watergate foi um escândalo político dos EUA entre 1972 e 1974. Envolveu invasão, encobrimento, investigação jornalística e terminou com a renúncia do presidente Richard Nixon.",
+      "enron": "Enron foi um grande escândalo corporativo. A empresa inflou lucros e ocultou dívidas com estruturas fora do balanço, culminando em falência e reformas regulatórias.",
+      "probabilidade": "Probabilidade é uma medida entre 0 e 1 para quantificar a chance de um evento sob um modelo. Em investigação, probabilidades devem ser interpretadas com cautela e contexto.",
+      "sigilo": "Sigilo operacional exige comunicação segura, canais restritos, registro de acessos e exposição mínima de dados sensíveis.",
+      "forense digital": "Forense digital é a coleta e análise técnica de vestígios eletrônicos com preservação de integridade, cadeia de custódia e documentação adequada.",
+      "ia": "Neste site, o modo Conversa não é uma IA real. É apenas um sistema de respostas fixas acionadas por palavras-chave para apoio conceitual e navegação.",
+      "missão": "A missão deve conter título, ID do projeto, responsável, objetivo, etapas OSINT, ferramentas, linha do tempo e observações éticas.",
+      "investigação": "Investigação é a busca sistemática de fatos para esclarecer acontecimentos. O método exige perguntas boas, documentação clara, validação independente e humildade intelectual."
+    };
+
+    const aliases = {
+      "maps":"geolocalização",
+      "earth":"geolocalização",
+      "street view":"geolocalização",
+      "pim eyes":"pimeyes",
+      "wayback":"wayback machine",
+      "cronologia":"linha do tempo",
+      "osint inicial":"osint",
+      "dados":"evidência",
+      "evidencias":"evidência",
+      "evidencias verificaveis":"evidência",
+      "privacidade":"lgpd",
+      "governança":"transparência",
+      "governanca":"transparência",
+      "detetive":"observador autodidata",
+      "moriarty":"investigação",
+      "método":"raciocínio evidencial",
+      "metodo":"raciocínio evidencial"
+    };
+
+    const list = document.getElementById('dictionaryList');
+    const chatLog = document.getElementById('chatLog');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const clearChat = document.getElementById('clearChat');
+
+    const keys = Object.keys(dictionary).sort((a,b)=>a.localeCompare(b, 'pt-BR'));
+
+    function addBubble(text, cls='bot'){
+      const el = document.createElement('div');
+      el.className = `bubble ${cls}`;
+      el.innerHTML = text;
+      chatLog.appendChild(el);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function normalize(text=''){
+      return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function resolveTerm(raw){
+      const n = normalize(raw);
+      if(!n) return null;
+
+      for(const key of Object.keys(dictionary)){
+        if(normalize(key) === n) return key;
+      }
+      for(const [alias, target] of Object.entries(aliases)){
+        if(normalize(alias) === n) return target;
+      }
+      for(const key of Object.keys(dictionary)){
+        if(normalize(key).includes(n) || n.includes(normalize(key))) return key;
+      }
+      for(const [alias, target] of Object.entries(aliases)){
+        if(normalize(alias).includes(n) || n.includes(normalize(alias))) return target;
+      }
+      return null;
+    }
+
+    function answerQuery(query){
+      const term = resolveTerm(query);
+      if(term){
+        return `<strong>${term.toUpperCase()}</strong><br>${dictionary[term]}`;
+      }
+      return `Termo não encontrado no dicionário operacional. Tente algo como <strong>OSINT</strong>, <strong>hipótese</strong>, <strong>ética</strong>, <strong>triangulação</strong>, <strong>LGPD</strong>, <strong>Watergate</strong> ou <strong>Enron</strong>.`;
+    }
+
+    keys.forEach((key, index)=>{
+      const btn = document.createElement('button');
+      btn.className = 'dict-btn';
+      btn.textContent = key;
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.dict-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        addBubble(key, 'user');
+        addBubble(answerQuery(key), 'bot');
+      });
+      list.appendChild(btn);
+      if(index < 1) btn.classList.add('active');
+    });
+
+    function sendQuery(){
+      const q = userInput.value.trim();
+      if(!q) return;
+      addBubble(q, 'user');
+      addBubble(answerQuery(q), 'bot');
+      userInput.value = '';
+      userInput.focus();
+    }
+
+    sendBtn.addEventListener('click', sendQuery);
+    userInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') sendQuery(); });
+    clearChat.addEventListener('click', ()=>{
+      chatLog.innerHTML = '<div class="bubble bot">Log limpo. Consulte um termo para continuar.</div>';
+      document.querySelectorAll('.dict-btn').forEach(b=>b.classList.remove('active'));
+    });
+
+    const boot = document.getElementById('bootLog');
+    const extraLines = [
+      '[SYNC] Dicionários metodológicos vinculados',
+      '[SYNC] Protocolos classificados indexados',
+      '[NOTICE] Modo Conversa = respostas fixas, não IA real'
+    ];
+
+    let i = 0;
+    setInterval(()=>{
+      if(i >= extraLines.length) return;
+      const line = document.createElement('div');
+      line.className = 'line';
+      line.innerHTML = `<span class="dim">[INFO]</span> ${extraLines[i]}`;
+      boot.appendChild(line);
+      i++;
+    }, 1100);
+  </script>
+</body>
+</html>
