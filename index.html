@@ -5,732 +5,1619 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — Agência de X-Inteligência e Operações Multimodais</title>
   <style>
-    :root{
-      --bg:#020403;
-      --bg2:#07110b;
-      --panel:rgba(5,18,10,.78);
-      --panel-strong:rgba(7,25,14,.92);
-      --line:rgba(89,255,156,.18);
-      --line-strong:rgba(89,255,156,.38);
-      --text:#d8ffe8;
-      --muted:#8ec9a7;
-      --accent:#59ff9c;
-      --accent-2:#00ff66;
-      --glow:0 0 10px rgba(89,255,156,.25),0 0 30px rgba(89,255,156,.12);
-      --shadow:0 18px 60px rgba(0,0,0,.55);
-      --danger:#9cffc4;
-      --radius:24px;
-      --radius-sm:16px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      --sans: Inter, Segoe UI, Arial, sans-serif;
+    :root {
+      --bg: linear-gradient(180deg, #010201, #020403 22%, #041009 100%);
+      --panel: rgba(4,12,8,.92);
+      --panel-light: rgba(6,20,12,.78);
+      --line: rgba(89,255,156,.18);
+      --line-strong: rgba(89,255,156,.45);
+      --accent: #caffde;
+      --accent-green: #00ff88;
+      --text: #e8f5e8;
+      --muted: #7da78d;
+      --glow: 0 0 32px rgba(89,255,156,.2);
+      --shadow: 0 16px 48px rgba(0,0,0,.6);
+      --mono: 'Courier New', 'Roboto Mono', monospace;
+      --sans: -apple-system, 'Segoe UI', Arial, sans-serif;
+      --radius: 24px;
+      --radius-sm: 16px;
     }
 
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:var(--sans);
-      color:var(--text);
-      background:
-        radial-gradient(circle at 20% 20%, rgba(0,255,102,.08), transparent 30%),
-        radial-gradient(circle at 80% 0%, rgba(89,255,156,.06), transparent 25%),
-        linear-gradient(180deg, #010201, #020403 22%, #041009 100%);
-      min-height:100vh;
-      overflow-x:hidden;
+    *,*::before,*::after{box-sizing:border-box}
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 15px;
+      line-height: 1.65;
     }
 
-    body::before{
-      content:"";
-      position:fixed; inset:0;
-      pointer-events:none;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255,255,255,.02) 0,
-          rgba(255,255,255,.02) 1px,
-          transparent 2px,
-          transparent 4px
-        );
-      mix-blend-mode:soft-light;
-      opacity:.18;
-      z-index:0;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(to bottom, rgba(255,255,255,.015) 0, rgba(255,255,255,.015) 1px, transparent 2px, transparent 4px);
+      mix-blend-mode: soft-light;
+      opacity: .18;
+      z-index: 0;
     }
 
-    .matrix-rain{
-      position:fixed;
-      inset:0;
-      z-index:0;
-      pointer-events:none;
-      opacity:.11;
-      background-image:
-        linear-gradient(transparent 0%, rgba(89,255,156,.08) 50%, transparent 100%),
-        repeating-linear-gradient(90deg, transparent 0 40px, rgba(89,255,156,.06) 41px 42px, transparent 43px 90px);
-      animation:drift 16s linear infinite;
+    .matrix-rain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .1;
+      background-image: linear-gradient(transparent 0%, rgba(89,255,156,.06) 50%, transparent 100%), repeating-linear-gradient(90deg, transparent 0 40px, rgba(89,255,156,.04) 41px 42px, transparent 43px 90px);
+      animation: drift 16s linear infinite;
     }
 
-    @keyframes drift{
-      from{transform:translateY(-2%)}
-      to{transform:translateY(2%)}
+    @keyframes drift { from{transform:translateY(-2%)} to{transform:translateY(2%)} }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1280px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 20px 0;
     }
 
-    .wrap{position:relative; z-index:1; width:min(1280px, calc(100% - 32px)); margin:0 auto;}
-
-    .hero{
-      padding:56px 0 26px;
+    /* LOGIN */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 20px;
+      position: fixed;
+      inset: 0;
+      background: rgba(1,2,1,.92);
+      z-index: 999;
+      backdrop-filter: blur(20px);
     }
 
-    .hero-card{
-      position:relative;
-      overflow:hidden;
-      border:1px solid var(--line-strong);
-      background:linear-gradient(180deg, rgba(4,12,8,.9), rgba(6,20,12,.74));
-      border-radius:32px;
-      box-shadow:var(--shadow), var(--glow);
-      padding:34px;
+    .login-box {
+      background: var(--panel);
+      border: 2px solid var(--line-strong);
+      padding: 50px 40px;
+      border-radius: var(--radius);
+      box-shadow: var(--glow), var(--shadow);
+      max-width: 450px;
+      width: 100%;
     }
 
-    .hero-card::after{
-      content:"";
-      position:absolute;
-      inset:auto -10% -35% auto;
-      width:420px; height:420px;
-      background:radial-gradient(circle, rgba(89,255,156,.12), transparent 62%);
-      filter:blur(20px);
+    .login-box h1 {
+      font-size: clamp(32px, 6vw, 48px);
+      margin: 0 0 20px;
+      letter-spacing: .1em;
+      background: linear-gradient(45deg, var(--accent), #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .eyebrow{
-      display:inline-flex;
-      gap:10px;
-      align-items:center;
-      padding:8px 14px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      color:var(--accent);
-      font:600 12px var(--mono);
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      background:rgba(0,0,0,.22);
-      box-shadow:inset 0 0 20px rgba(89,255,156,.06);
+    .login-box input {
+      width: 100%;
+      padding: 18px 22px;
+      margin: 14px 0;
+      background: rgba(1,8,4,.8);
+      border: 2px solid var(--line);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 18px;
+      border-radius: var(--radius-sm);
+      transition: all .3s;
     }
 
-    h1{
-      font-size:clamp(30px, 5.8vw, 64px);
-      margin:18px 0 10px;
-      line-height:1.03;
-      text-shadow:0 0 22px rgba(89,255,156,.14);
-      letter-spacing:.04em;
+    .login-box input:focus {
+      outline: none;
+      border-color: var(--line-strong);
+      box-shadow: 0 0 0 4px rgba(89,255,156,.2);
     }
 
-    .subtitle{
-      max-width:900px;
-      color:var(--muted);
-      font-size:1.05rem;
-      line-height:1.7;
+    .login-btn {
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(145deg, rgba(89,255,156,.2), rgba(0,255,136,.12));
+      border: 2px solid var(--line-strong);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      letter-spacing: .1em;
+      transition: all .3s;
+      text-transform: uppercase;
+      margin-top: 10px;
     }
 
-    .grid-top{
-      margin-top:24px;
-      display:grid;
-      grid-template-columns:1.6fr .95fr;
-      gap:18px;
+    .login-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--glow), 0 20px 40px rgba(89,255,156,.3);
+      background: linear-gradient(145deg, rgba(89,255,156,.35), rgba(0,255,136,.25));
     }
 
-    .panel{
-      background:linear-gradient(180deg, rgba(8,24,14,.72), rgba(4,14,8,.82));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:22px;
-      backdrop-filter:blur(10px);
+    .login-hint { margin-top: 25px; font-size: 14px; opacity: .8; }
+
+    /* HEADER */
+    .agent-status {
+      background: linear-gradient(145deg, rgba(4,16,10,.95), rgba(2,10,6,.95));
+      border: 2px solid var(--line-strong);
+      padding: 22px 30px;
+      border-radius: var(--radius);
+      text-align: center;
+      margin-bottom: 25px;
+      box-shadow: var(--glow);
     }
 
-    .panel h2, .panel h3{
-      margin:0 0 14px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      font:700 14px var(--mono);
-      color:var(--accent);
+    /* HERO */
+    .hero { padding: 20px 0 10px; }
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      background: linear-gradient(180deg, rgba(4,12,8,.9), rgba(6,20,12,.74));
+      border-radius: 32px;
+      box-shadow: var(--shadow), var(--glow);
+      padding: 34px;
+    }
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -35% auto;
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(89,255,156,.12), transparent 62%);
+      filter: blur(20px);
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent);
+      font: 600 12px var(--mono);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      background: rgba(0,0,0,.22);
+    }
+    .hero h1 {
+      font-size: clamp(30px, 5.8vw, 64px);
+      margin: 18px 0 10px;
+      line-height: 1.03;
+      text-shadow: 0 0 22px rgba(89,255,156,.14);
+      letter-spacing: .04em;
+    }
+    .subtitle {
+      max-width: 900px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
     }
 
-    .terminal{
-      font-family:var(--mono);
-      background:#010503;
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:18px;
-      min-height:240px;
-      box-shadow:inset 0 0 22px rgba(89,255,156,.04);
+    /* LANGUAGE + COURSE LINKS */
+    .lang-selector, .course-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+    .lang-btn, .course-btn {
+      padding: 10px 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0,0,0,.3);
+      color: var(--text);
+      cursor: pointer;
+      font: 600 13px var(--mono);
+      transition: .2s ease;
+      letter-spacing: .04em;
+      text-decoration: none;
+    }
+    .lang-btn:hover, .lang-btn.active,
+    .course-btn:hover {
+      border-color: var(--line-strong);
+      color: var(--accent);
+      background: rgba(89,255,156,.08);
+      box-shadow: 0 0 16px rgba(89,255,156,.08);
     }
 
-    .terminal .line{margin:.45rem 0; color:#caffde}
-    .terminal .prompt{color:var(--accent)}
-    .terminal .dim{color:#7da78d}
+    /* GRID TOP */
+    .grid-top { display: grid; grid-template-columns: 1.6fr .95fr; gap: 18px; margin-top: 24px; }
 
-    nav{
-      position:sticky;
-      top:12px;
-      z-index:4;
-      margin:16px 0 24px;
+    /* PANELS */
+    .panel {
+      background: linear-gradient(180deg, rgba(8,24,14,.72), rgba(4,14,8,.82));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      backdrop-filter: blur(10px);
+    }
+    .panel h2, .panel h3 {
+      margin: 0 0 14px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font: 700 14px var(--mono);
+      color: var(--accent);
     }
 
-    .nav-inner{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      padding:10px;
-      border:1px solid var(--line);
-      background:rgba(2,10,5,.78);
-      backdrop-filter:blur(14px);
-      border-radius:20px;
-      box-shadow:var(--glow);
+    /* TERMINAL */
+    .terminal-box {
+      font-family: var(--mono);
+      background: #010503;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      min-height: 240px;
+      max-height: 400px;
+      overflow: auto;
+      box-shadow: inset 0 0 22px rgba(89,255,156,.04);
+    }
+    .terminal-box .line { margin: .45rem 0; color: #caffde; word-break: break-all; }
+    .terminal-box .prompt { color: var(--accent) }
+    .terminal-box .dim { color: #7da78d }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 12px;
+      z-index: 10;
+      margin: 16px 0 24px;
+    }
+    .nav-inner {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: rgba(2,10,5,.78);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      box-shadow: var(--glow);
+    }
+    .nav-inner a, .nav-inner button {
+      text-decoration: none;
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      font: 600 13px var(--mono);
+      transition: .2s ease;
+      letter-spacing: .04em;
+      background: transparent;
+      cursor: pointer;
+    }
+    .nav-inner a:hover, .nav-inner button:hover,
+    .nav-inner a.active, .nav-inner button.active {
+      border-color: var(--line-strong);
+      color: var(--accent);
+      background: rgba(89,255,156,.06);
+      transform: translateY(-1px);
     }
 
-    .nav-inner a{
-      text-decoration:none;
-      color:var(--text);
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px solid transparent;
-      font:600 13px var(--mono);
-      transition:.2s ease;
-      letter-spacing:.04em;
+    /* SECTIONS */
+    .section { display: none; margin: 18px 0 22px; }
+    .section.active { display: block; animation: fadeIn .4s ease; }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(16px)} to{opacity:1; transform:translateY(0)} }
+
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+    .card {
+      padding: 24px;
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .card h3 { margin: 0 0 16px; color: var(--accent); font: 700 14px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+    .card p { color: var(--muted); line-height: 1.75; margin: 0 0 12px; }
+    .card ul { margin: 0; padding-left: 18px; color: var(--text); line-height: 1.85; }
+    .card li { margin-bottom: 6px; }
+    .card a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed rgba(89,255,156,.35); transition: .2s ease; }
+    .card a:hover { color: #cffff0; border-bottom-color: var(--accent); text-shadow: 0 0 14px rgba(89,255,156,.25); }
+
+    .osint-tool {
+      background: linear-gradient(145deg, rgba(6,20,12,.9), rgba(4,14,8,.85));
+      border: 2px solid var(--line);
+      padding: 35px;
+      margin: 30px 0;
+      border-radius: var(--radius);
+      box-shadow: var(--glow), var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .osint-tool h3 { margin: 0 0 25px; color: var(--accent); font-size: 24px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+
+    .osint-input {
+      width: 100%;
+      padding: 18px 22px;
+      background: rgba(1,8,4,.9);
+      border: 2px solid var(--line);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 16px;
+      border-radius: var(--radius-sm);
+      margin: 12px 0;
+      transition: all .3s;
+    }
+    .osint-input:focus {
+      outline: none;
+      border-color: var(--line-strong);
+      box-shadow: 0 0 0 4px rgba(89,255,156,.25);
+    }
+    textarea.osint-input { min-height: 100px; resize: vertical; }
+
+    .btn-osint {
+      background: linear-gradient(145deg, var(--line-strong), rgba(89,255,156,.4));
+      border: 2px solid var(--line-strong);
+      color: #000;
+      padding: 16px 30px;
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: all .3s;
+      margin: 8px 10px 8px 0;
+    }
+    .btn-osint:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 16px 32px rgba(89,255,156,.35); }
+    .btn-osint.secondary { background: linear-gradient(145deg, #7da78d, rgba(125,167,141,.5)); border-color: #7da78d; }
+
+    .osint-results {
+      background: rgba(1,6,3,.95);
+      border: 2px solid var(--line-strong);
+      padding: 25px;
+      margin-top: 25px;
+      max-height: 350px;
+      overflow: auto;
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 15px;
+      line-height: 1.7;
+      box-shadow: inset 0 0 30px rgba(89,255,156,.1);
+      white-space: pre-wrap;
     }
 
-    .nav-inner a:hover{
-      border-color:var(--line-strong);
-      color:var(--accent);
-      background:rgba(89,255,156,.06);
-      transform:translateY(-1px);
+    .mission-area {
+      width: 100%;
+      min-height: 250px;
+      padding: 22px;
+      background: rgba(2,8,5,.9);
+      border: 2px solid var(--line);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 15px;
+      border-radius: 20px;
+      resize: vertical;
+      margin: 15px 0;
     }
 
-    section{margin:18px 0 22px;}
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+    .link-card {
+      background: linear-gradient(145deg, rgba(4,14,8,.9), rgba(2,8,5,.85));
+      border: 2px solid var(--line);
+      padding: 30px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      color: var(--text);
+      transition: all .3s;
+    }
+    .link-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--glow), 0 30px 60px rgba(0,0,0,.7);
+      border-color: var(--line-strong);
+    }
+    .link-card h3 { margin: 0 0 15px; color: var(--accent-green); }
 
-    .cards{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px;}
-    .card{padding:24px; border-radius:var(--radius); background:var(--panel); border:1px solid var(--line); box-shadow:var(--shadow);}
-    .card h3{margin:0 0 16px; color:var(--accent); font:700 14px var(--mono); text-transform:uppercase; letter-spacing:.08em;}
-    .card p{color:var(--muted); line-height:1.75; margin:0 0 12px;}
-    .card ul{margin:0; padding-left:18px; color:var(--text); line-height:1.85}
-    .card li{margin-bottom:6px}
+    /* CHAT */
+    .chat-shell { display: grid; grid-template-columns: 280px 1fr; gap: 18px; }
+    .dictionary-list { max-height: 500px; overflow: auto; padding-right: 6px; }
+    .dict-btn {
+      width: 100%; text-align: left;
+      background: rgba(89,255,156,.03);
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      font: 600 13px var(--mono);
+      margin-bottom: 8px;
+      transition: .2s ease;
+    }
+    .dict-btn:hover, .dict-btn.active {
+      color: var(--accent);
+      border-color: var(--line-strong);
+      background: rgba(89,255,156,.08);
+    }
+    .chat-box {
+      display: flex;
+      flex-direction: column;
+      min-height: 480px;
+      background: linear-gradient(180deg, rgba(6,18,11,.88), rgba(3,11,6,.98));
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .chat-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(1,8,4,.7);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .chat-status { font: 700 12px var(--mono); color: var(--accent); letter-spacing: .14em; text-transform: uppercase; }
+    .chat-note { color: var(--muted); font-size: .9rem; }
+    .chat-log {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      overflow: auto;
+      min-height: 300px;
+      max-height: 400px;
+    }
+    .bubble {
+      max-width: 85%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      line-height: 1.7;
+      border: 1px solid var(--line);
+      animation: fadeIn .3s ease;
+    }
+    .user { align-self: flex-end; background: rgba(89,255,156,.08); }
+    .bot { align-self: flex-start; background: rgba(0,0,0,.24); }
+    .chat-input {
+      border-top: 1px solid var(--line);
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      background: rgba(1,9,5,.82);
+    }
+    .chat-input input {
+      flex: 1;
+      background: #021008;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font: 500 14px var(--sans);
+      outline: none;
+    }
+    .chat-input input:focus { border-color: var(--line-strong); box-shadow: 0 0 0 4px rgba(89,255,156,.08); }
 
-    .mission-template{
-      background:linear-gradient(180deg, rgba(6,22,13,.92), rgba(2,9,5,.98));
-      border:1px solid var(--line-strong);
-      border-radius:26px;
-      padding:24px;
-      white-space:pre-wrap;
-      font-family:var(--mono);
-      line-height:1.8;
-      box-shadow:var(--glow), var(--shadow);
+    .badge-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-top: 18px; }
+    .badge {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      background: rgba(89,255,156,.03);
+      font-family: var(--mono);
+      font-size: .84rem;
+      color: var(--text);
+    }
+    .badge b { color: var(--accent); }
+
+    .mini-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-top: 18px; }
+    .mini {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+    }
+    .mini strong { display: block; color: var(--accent); margin-bottom: 8px; font: 700 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .mini span { color: var(--muted); line-height: 1.6; font-size: .96rem; }
+
+    .mission-template {
+      background: linear-gradient(180deg, rgba(6,22,13,.92), rgba(2,9,5,.98));
+      border: 1px solid var(--line-strong);
+      border-radius: 26px;
+      padding: 24px;
+      white-space: pre-wrap;
+      font-family: var(--mono);
+      line-height: 1.8;
+      box-shadow: var(--glow), var(--shadow);
     }
 
-    .chat-shell{
-      display:grid;
-      grid-template-columns:320px 1fr;
-      gap:18px;
+    footer { padding: 18px 0 42px; color: var(--muted); text-align: center; font-size: .95rem; }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .module-item {
+      background: rgba(0,14,4,.85);
+      border: 1px solid rgba(89,255,156,.2);
+      border-radius: 14px;
+      padding: 14px 16px;
+      transition: all .3s ease;
+    }
+    .module-item:hover {
+      border-color: rgba(89,255,156,.5);
+      transform: translateY(-3px);
+      box-shadow: 0 0 20px rgba(89,255,156,.12);
+    }
+    .module-item .mod-title { color: var(--accent); font-weight: 700; font-size: .9rem; margin-bottom: 4px; }
+    .module-item .mod-desc { color: var(--muted); font-size: .82rem; }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+      margin: 20px 0;
     }
 
-    .dictionary-list{
-      max-height:640px;
-      overflow:auto;
-      padding-right:6px;
+    @media (max-width: 1020px) {
+      .grid-top, .chat-shell, .cards, .tool-grid { grid-template-columns: 1fr; }
+      .badge-grid, .mini-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
     }
-
-    .dict-btn{
-      width:100%; text-align:left;
-      background:rgba(89,255,156,.03);
-      color:var(--text);
-      border:1px solid var(--line);
-      padding:12px 14px;
-      border-radius:14px;
-      cursor:pointer;
-      font:600 13px var(--mono);
-      margin-bottom:10px;
-      transition:.2s ease;
-    }
-
-    .dict-btn:hover, .dict-btn.active{
-      color:var(--accent);
-      border-color:var(--line-strong);
-      background:rgba(89,255,156,.08);
-      box-shadow:0 0 16px rgba(89,255,156,.08);
-    }
-
-    .chat-box{
-      display:flex;
-      flex-direction:column;
-      min-height:640px;
-      background:linear-gradient(180deg, rgba(6,18,11,.88), rgba(3,11,6,.98));
-      border:1px solid var(--line);
-      border-radius:26px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-
-    .chat-head{
-      padding:18px 20px;
-      border-bottom:1px solid var(--line);
-      background:rgba(1,8,4,.7);
-      display:flex; justify-content:space-between; gap:12px; align-items:center;
-    }
-
-    .status{font:700 12px var(--mono); color:var(--accent); letter-spacing:.14em; text-transform:uppercase;}
-    .status-note{color:var(--muted); font-size:.93rem}
-
-    .chat-log{
-      padding:22px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      flex:1;
-      overflow:auto;
-      background:
-        radial-gradient(circle at top, rgba(89,255,156,.04), transparent 40%),
-        linear-gradient(180deg, rgba(0,0,0,.08), transparent 35%);
-    }
-
-    .bubble{
-      max-width:85%;
-      padding:14px 16px;
-      border-radius:18px;
-      line-height:1.7;
-      border:1px solid var(--line);
-      box-shadow:0 10px 24px rgba(0,0,0,.2);
-    }
-
-    .user{align-self:flex-end; background:rgba(89,255,156,.08)}
-    .bot{align-self:flex-start; background:rgba(0,0,0,.24)}
-
-    .chat-input{
-      border-top:1px solid var(--line);
-      padding:16px;
-      display:flex;
-      gap:12px;
-      background:rgba(1,9,5,.82);
-    }
-
-    .chat-input input{
-      flex:1;
-      background:#021008;
-      color:var(--text);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px 16px;
-      font:500 14px var(--sans);
-      outline:none;
-    }
-
-    .chat-input input:focus{border-color:var(--line-strong); box-shadow:0 0 0 4px rgba(89,255,156,.08)}
-
-    button.send, .ghost{
-      border:1px solid var(--line-strong);
-      background:linear-gradient(180deg, rgba(89,255,156,.14), rgba(89,255,156,.06));
-      color:var(--text);
-      padding:14px 18px;
-      border-radius:16px;
-      cursor:pointer;
-      font:700 12px var(--mono);
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      transition:.2s ease;
-    }
-
-    button.send:hover, .ghost:hover{transform:translateY(-1px); box-shadow:var(--glow)}
-
-    .mini-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:18px;}
-    .mini{padding:16px; border-radius:18px; border:1px solid var(--line); background:rgba(0,0,0,.18)}
-    .mini strong{display:block; color:var(--accent); margin-bottom:8px; font:700 12px var(--mono); letter-spacing:.08em; text-transform:uppercase;}
-    .mini span{color:var(--muted); line-height:1.6; font-size:.96rem}
-
-    footer{padding:18px 0 42px; color:var(--muted); text-align:center; font-size:.95rem}
-
-    .badge-grid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:18px}
-    .badge{border:1px solid var(--line); border-radius:16px; padding:14px; background:rgba(89,255,156,.03); font-family:var(--mono); font-size:.84rem; color:var(--text)}
-    .badge b{color:var(--accent)}
-
-    @media (max-width: 1020px){
-      .grid-top,.chat-shell,.cards{grid-template-columns:1fr}
-      .badge-grid,.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-    }
-
-    @media (max-width: 680px){
-      .wrap{width:min(100% - 20px, 1280px)}
-      .hero-card{padding:22px}
-      .badge-grid,.mini-grid{grid-template-columns:1fr}
-      .nav-inner a{width:100%; text-align:center}
-      .chat-head{align-items:flex-start; flex-direction:column}
-      .chat-input{flex-direction:column}
-      .bubble{max-width:100%}
+    @media (max-width: 680px) {
+      .wrap { width: min(100% - 20px, 1280px); }
+      .hero-card { padding: 22px; }
+      .badge-grid, .mini-grid, .module-grid { grid-template-columns: 1fr; }
+      .nav-inner { flex-direction: column; }
+      .nav-inner a, .nav-inner button { width: 100%; text-align: center; }
+      .chat-head { flex-direction: column; align-items: flex-start; }
+      .chat-input { flex-direction: column; }
+      .bubble { max-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="matrix-rain"></div>
 
-  <div class="wrap">
-    <header class="hero" id="topo">
-      <div class="hero-card">
-        <span class="eyebrow">[ Rede Segura ] • [ Núcleo Operacional ] • [ Investigação Remota ]</span>
-        <h1>Ａ.Ｘ.Ｉ.Ｏ.Ｍ.</h1>
-        <p class="subtitle">
-          <strong>𝘈𝘨𝘦̂𝘯𝘤𝘪𝘢 𝘥𝘦 𝘟-𝘐𝘯𝘵𝘦𝘭𝘪𝘨𝘦̂𝘯𝘤𝘪𝘢 𝘦 𝘖𝘱𝘦𝘳𝘢𝘤̧𝘰̃𝘦𝘴 𝘔𝘶𝘭𝘵𝘪𝘮𝘰𝘥𝘢𝘪𝘴</strong><br>
-          Um portal visual para organização de investigações, raciocínio evidencial, triagem OSINT, geolocalização, cronologia de casos e protocolos éticos. O modo <em>Conversa</em> abaixo é apenas um dicionário interativo com respostas pré-definidas — não é uma IA real.
-        </p>
+<div class="matrix-rain"></div>
 
-        <div class="grid-top">
-          <div class="panel">
-            <h2>QG Central</h2>
-            <p style="line-height:1.8; color:var(--muted); margin:0">
-              Este é o QG central para investigadores. Aqui, a intuição encontra a precisão. Para quem está começando, o caminho para a resolução de casos se baseia na metodologia de investigação remota, registro disciplinado de evidências e montagem de hipóteses auditáveis.
-            </p>
-            <div class="badge-grid">
-              <div class="badge"><b>OSINT</b><br>Buscas avançadas, Dorks, cruzamento de fontes.</div>
-              <div class="badge"><b>Geo</b><br>Maps, Earth e Street View como extensões dos olhos.</div>
-              <div class="badge"><b>Dados</b><br>Padrões, redes, perfis, sinais e correlação.</div>
-              <div class="badge"><b>Cronologia</b><br>Linha do tempo para detectar lacunas.</div>
-            </div>
-          </div>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <h1>Ａ.Ｘ.Ｉ.Ｏ.Ｍ.</h1>
+    <p>Agência de X-Inteligência<br>Autenticação</p>
+    <input type="text" id="adminUser" placeholder="👤 Username">
+    <input type="password" id="adminPass" placeholder="🔑 Password">
+    <button class="login-btn" onclick="adminLogin()">🚀 ACESSAR QG</button>
+    <div class="login-hint"><strong>Credenciais:</strong> admin / admin</div>
+  </div>
+</div>
 
-          <div class="panel">
-            <h2>Console de Estado</h2>
-            <div class="terminal" id="bootLog">
-              <div class="line"><span class="prompt">axiom@core:~$</span> boot --secure</div>
-              <div class="line"><span class="dim">[OK]</span> Canal seguro inicializado</div>
-              <div class="line"><span class="dim">[OK]</span> Módulos OSINT carregados</div>
-              <div class="line"><span class="dim">[OK]</span> Regras éticas vinculadas</div>
-              <div class="line"><span class="dim">[OK]</span> Dicionário conversacional disponível</div>
-              <div class="line"><span class="prompt">axiom@core:~$</span> status</div>
-              <div class="line">Pronto para investigação organizada.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
+<!-- MAIN SYSTEM -->
+<div id="mainSystem" style="display:none;">
 
-    <nav>
-      <div class="nav-inner">
-        <a href="#pilares">Pilares</a>
-        <a href="#ferramentas">Ferramentas</a>
-        <a href="#protocolo">Protocolo</a>
-        <a href="#diretrizes">Diretrizes</a>
-        <a href="#missao">Missão</a>
-        <a href="#conversa">Conversa</a>
-      </div>
-    </nav>
+<div class="wrap">
 
-    <section id="pilares" class="cards">
-      <article class="card">
-        <h3>🔎 Pilares da Investigação</h3>
-        <ul>
-          <li><strong>OSINT:</strong> domine buscas avançadas do Google e Google Dorks.</li>
-          <li><strong>Geolocalização:</strong> use Google Maps, Earth e Street View como extensões dos seus olhos.</li>
-          <li><strong>Análise de Dados:</strong> monitore redes sociais, rastreie padrões e cruze informações.</li>
-          <li><strong>Linha do Tempo:</strong> organize os fatos cronologicamente para identificar lacunas.</li>
-        </ul>
-      </article>
-
-      <article class="card" id="ferramentas">
-        <h3>🛠️ Ferramentas Recomendadas</h3>
-        <ul>
-          <li><strong>Busca &amp; Identificação:</strong> Maltego, Shodan, PimEyes, TinEye.</li>
-          <li><strong>Arquivamento:</strong> Wayback Machine para preservar evidências antes que desapareçam.</li>
-          <li><strong>Gestão:</strong> documente tudo em arquivos compartilhados e faça backups em tempo real.</li>
-          <li><strong>Análise de Redes:</strong> Gephi ou NetworkX para conexões complexas.</li>
-          <li><strong>Forense Digital:</strong> EnCase e FTK para extração e triagem de evidências autorizadas.</li>
-          <li><strong>Geografia / SIG:</strong> ArcGIS ou QGIS para padrões e distribuição geográfica.</li>
-          <li><strong>Multimídia:</strong> Adobe Premiere Pro ou DaVinci Resolve para revisão de vídeo.</li>
-        </ul>
-      </article>
-    </section>
-
-    <section class="cards">
-      <article class="card">
-        <h3>⚠️ Lembrete Ético</h3>
-        <p>
-          A ética é a base do trabalho investigativo. Respeite a privacidade, mantenha a integridade dos dados e foque na justiça. Investigue com cautela, registre limites metodológicos e nunca invada sistemas nem acesse dados privados sem autorização.
-        </p>
-      </article>
-      <article class="card">
-        <h3>🧠 Método do Investigador</h3>
-        <p>
-          Anote hipóteses sem julgá-las a priori, separe fatos de interpretações, teste ideias com evidências verificáveis, compare hipóteses concorrentes, registre falhas de raciocínio e priorize dados frios sobre impressões subjetivas.
-        </p>
-      </article>
-    </section>
-
-    <section id="protocolo" class="cards">
-      <article class="card">
-        <h3>📋 Protocolo de Entrada — A.X.I.O.M.</h3>
-        <ul>
-          <li><strong>Identificação do Agente:</strong> informe seu codinome e nível de acesso.</li>
-          <li><strong>Registro do Caso:</strong> nome do caso e breve resumo do objetivo da investigação.</li>
-          <li><strong>Coleta Inicial (OSINT):</strong> buscas avançadas via Google Dorks, Wayback Machine, PimEyes ou TinEye.</li>
-          <li><strong>Mapeamento Geográfico:</strong> análise inicial via Google Earth/Maps.</li>
-          <li><strong>Linha do Tempo:</strong> estabeleça eventos conhecidos em ordem cronológica.</li>
-          <li><strong>Gerenciamento:</strong> organize os dados em sistemas como CaseMap ou Relativity.</li>
-          <li><strong>Compromisso Ético:</strong> confirme que não houve invasão de sistemas ou acesso indevido.</li>
-        </ul>
-      </article>
-      <article class="card">
-        <h3>📡 Procedimentos Operacionais</h3>
-        <ul>
-          <li>Coleta de depoimentos por fóruns, DMs e grupos com segurança e consentimento.</li>
-          <li>Uso de IA e aprendizado de máquina apenas para identificar padrões e apoiar análise humana.</li>
-          <li>Documentação rigorosa, comunicação segura e validação cruzada de informações.</li>
-          <li>Backups de tela, cadeia de custódia e trilha de auditoria sempre que possível.</li>
-        </ul>
-      </article>
-    </section>
-
-    <section id="diretrizes" class="cards">
-      <article class="card">
-        <h3>📜 Diretrizes Classificadas — Protocolos de Investigação</h3>
-        <ul>
-          <li><strong>Pesquisa Avançada:</strong> Google Dorks para filtragem profunda de dados públicos.</li>
-          <li><strong>Geolocalização:</strong> Earth e Street View para análise estrutural de locais.</li>
-          <li><strong>Monitoramento Digital:</strong> redes sociais, feeds públicos e câmeras conforme a necessidade do caso.</li>
-          <li><strong>Organização de Volume:</strong> casos densos devem ser processados via CaseMap ou Relativity.</li>
-          <li><strong>Integridade Cronológica:</strong> toda investigação deve ter linha do tempo rigorosa.</li>
-          <li><strong>Validação Técnica:</strong> métricas, validação cruzada e documentação das limitações do modelo.</li>
-        </ul>
-      </article>
-      <article class="card">
-        <h3>🔐 Conduta Ética e Segurança</h3>
-        <ul>
-          <li><strong>Sigilo:</strong> mantenha sempre um canal de comunicação seguro.</li>
-          <li><strong>Legalidade:</strong> respeite a privacidade e a autorização expressa.</li>
-          <li><strong>Documentação:</strong> registre cada passo com evidências e backups.</li>
-          <li><strong>Interdisciplinaridade:</strong> envolva ciência de dados, engenharia e geologia estrutural quando necessário.</li>
-          <li><strong>Critérios de Inviabilidade:</strong> dados falhos ou de baixa qualidade devem ser registrados imediatamente.</li>
-        </ul>
-      </article>
-    </section>
-
-    <section class="panel">
-      <h2>Infraestrutura e Governança</h2>
-      <div class="mini-grid">
-        <div class="mini"><strong>Dados</strong><span>PostGIS, GeoPandas, QGIS, Neo4j, ArangoDB, NetworkX, pipelines ETL/ELT e catálogo de dados.</span></div>
-        <div class="mini"><strong>ML / IA</strong><span>PyTorch, TensorFlow, scikit-learn, spaCy e transformers para apoio analítico com humano no loop.</span></div>
-        <div class="mini"><strong>Segurança</strong><span>RBAC, criptografia, logs de auditoria, Vault, políticas de retenção e conformidade LGPD/GDPR.</span></div>
-      </div>
-    </section>
-
-    <section id="missao">
-      <div class="mission-template">📍 TÍTULO DA MISSÃO: [Nome do Caso]
-📁 ID DO PROJETO: [Ex: #000]
-👤 RESPONSÁVEL: [Nome do Agente]
-
-🎯 OBJETIVO:
-[Descreva o que deve ser alcançado]
-
-🔎 ETAPAS DE INVESTIGAÇÃO (Baseado em OSINT):
-
-    [ ] Pesquisa Online: [Fontes/Links]
-    [ ] Geolocalização: [Detalhes de locais]
-    [ ] Análise de Redes: [Perfis/Interações]
-    [ ] Coleta de Provas: [Prints/Depoimentos]
-    [ ] Linha do Tempo: [Eventos cronológicos]
-
-🛠️ FERRAMENTAS RECOMENDADAS:
-[Ex: Maltego, Google Dorks, Wayback Machine]
-
-⚠️ OBSERVAÇÕES / NOTAS:
-[Privacidade e Ética: Não invada sistemas sem autorização.]</div>
-    </section>
-
-    <section id="conversa" class="panel">
-      <h2>Modo Conversa — Dicionário Operacional</h2>
-      <p style="margin:0 0 18px; color:var(--muted); line-height:1.75">
-        Este módulo responde com base em um dicionário fixo de termos, protocolos e conceitos de investigação. Não gera raciocínio autônomo e não substitui análise humana. Clique em um termo ou digite uma palavra-chave.
-      </p>
-
-      <div class="chat-shell">
-        <aside class="dictionary-list" id="dictionaryList"></aside>
-
-        <div class="chat-box">
-          <div class="chat-head">
-            <div>
-              <div class="status">Módulo de Conversa • Simulado</div>
-              <div class="status-note">Baseado em palavras-chave, definições e protocolos pré-carregados.</div>
-            </div>
-            <button class="ghost" id="clearChat">Limpar Log</button>
-          </div>
-
-          <div class="chat-log" id="chatLog">
-            <div class="bubble bot">Saudações, agente. Consulte termos como <strong>OSINT</strong>, <strong>hipótese</strong>, <strong>triangulação</strong>, <strong>ética</strong>, <strong>Watergate</strong>, <strong>Enron</strong>, <strong>LGPD</strong> ou <strong>linha do tempo</strong>.</div>
-          </div>
-
-          <div class="chat-input">
-            <input id="userInput" type="text" placeholder="Digite um termo, ferramenta ou conceito..." />
-            <button class="send" id="sendBtn">Consultar</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — Agência de X-Inteligência e Operações Multimodais • Interface estática • investigação organizada, ética e auditável.
-    </footer>
+  <!-- AGENT STATUS -->
+  <div class="agent-status">
+    <strong>✅ ADMIN AUTENTICADO</strong> |
+    <span style="color:var(--accent);">Sistema: ONLINE</span> |
+    <span style="color:var(--accent-green);">OSINT: ATIVO</span> |
+    <span id="langIndicator" style="color:#7da78d;">PT-BR</span>
   </div>
 
-  <script>
-    const dictionary = {
-      "osint": "OSINT é a investigação com fontes abertas. Envolve buscas avançadas, cruzamento de registros públicos, análise de perfis, imagens, arquivos e vestígios digitais com foco em evidências verificáveis.",
-      "geolocalização": "Geolocalização é o uso de mapas, imagens de satélite, Street View e referências visuais para analisar locais, rotas, estruturas e compatibilidade espacial de uma hipótese.",
-      "google dorks": "Google Dorks são operadores avançados de busca usados para filtrar resultados públicos de forma mais precisa, como site:, filetype:, intitle: e combinações booleanas.",
-      "maltego": "Maltego é uma ferramenta de análise de conexões e entidades, útil para visualizar relações entre pessoas, domínios, contas, organizações e eventos.",
-      "shodan": "Shodan é um mecanismo de busca voltado a serviços e dispositivos expostos na internet. Deve ser usado apenas para mapeamento autorizado e pesquisa legítima.",
-      "pimeyes": "PimEyes é uma ferramenta de busca reversa facial. Seu uso exige atenção ética, respeito à privacidade e conformidade legal.",
-      "tineye": "TinEye é uma ferramenta de busca reversa de imagens que ajuda a localizar versões anteriores, reuploads e contextos de circulação de uma imagem.",
-      "wayback machine": "Wayback Machine arquiva versões históricas de páginas. É útil para preservar evidências antes que conteúdos sejam apagados ou alterados.",
-      "linhado tempo": "Linha do tempo é a organização cronológica dos fatos. Ela permite detectar lacunas, contradições, intervalos suspeitos e momentos-chave da investigação.",
-      "linha do tempo": "Linha do tempo é a organização cronológica dos fatos. Ela permite detectar lacunas, contradições, intervalos suspeitos e momentos-chave da investigação.",
-      "hipótese": "Hipótese é uma linha de investigação provisória. Ela orienta a coleta de dados, mas não deve ser confundida com verdade. Deve ser confirmada ou descartada por evidências.",
-      "evidência": "Evidência é um dado verificável que sustenta uma conclusão. O ideal é registrar fonte, contexto, horário, cadeia de custódia e limitações interpretativas.",
-      "triangulação": "Triangulação é confirmar uma conclusão por meio de múltiplas fontes independentes. Quanto mais convergência entre fontes confiáveis, maior a robustez da análise.",
-      "ética": "Ética investigativa é curiosidade sem dano. Exige respeito à privacidade, legalidade, integridade dos dados, consentimento quando pertinente e recusa a invasões ou abusos.",
-      "integridade": "Integridade é a adesão a princípios e fatos mesmo sob pressão. No contexto investigativo, é manter registros honestos, não distorcer evidências e reconhecer incertezas.",
-      "confidencialidade": "Confidencialidade é a proteção de informações sensíveis. Ela exige controle de acesso, logs, necessidade de saber e canais seguros entre agentes.",
-      "lgpd": "LGPD é a Lei Geral de Proteção de Dados. Ela estrutura regras de tratamento de dados pessoais, princípios de finalidade, necessidade, segurança e responsabilização.",
-      "transparência": "Transparência é tornar processos, decisões e critérios visíveis e auditáveis. Em investigação séria, isso inclui metodologia clara, versão de dados e justificativa das conclusões.",
-      "accountability": "Accountability é responsabilização pública. Significa poder explicar, justificar e responder pelas decisões, ações e impactos de uma investigação ou gestão.",
-      "observador autodidata": "Observador autodidata é quem aprende por perguntas e verificação, não por autoridade cega. Registra fatos, duvida de certezas fáceis e revisa conclusões com novas evidências.",
-      "raciocínio evidencial": "Raciocínio evidencial é pensar com base em fatos verificáveis. Exige separar fato, hipótese e opinião, testar contraprovas e ajustar a explicação ao peso dos dados.",
-      "coleta de fatos": "Coleta de fatos é reunir fontes primárias, observações diretas, documentos verificáveis e dados quantificáveis, sempre distinguindo observação de interpretação.",
-      "sistema de anotações": "Sistema de anotações é a estrutura que organiza fatos, hipóteses, fontes, datas e evidências contrárias. Sem registro claro, a investigação perde reprodutibilidade.",
-      "protocolo": "O protocolo de entrada da A.X.I.O.M. pede identificação do agente, registro do caso, coleta OSINT inicial, mapeamento geográfico, linha do tempo, gerenciamento dos dados e compromisso ético.",
-      "casemap": "CaseMap é uma ferramenta de organização de casos, usada para estruturar fatos, fontes, pessoas, cronologias e relações entre evidências.",
-      "relativity": "Relativity é uma plataforma de e-discovery e gestão de grandes volumes documentais, útil para revisão, classificação e rastreabilidade de evidências digitais.",
-      "qgis": "QGIS é uma plataforma de informação geográfica que ajuda a mapear ocorrências, padrões espaciais e correlações geográficas em investigações.",
-      "networkx": "NetworkX é uma biblioteca para modelagem e análise de grafos. Pode apoiar a visualização de redes de relação entre contas, entidades e interações.",
-      "watergate": "Watergate foi um escândalo político dos EUA entre 1972 e 1974. Envolveu invasão, encobrimento, investigação jornalística e terminou com a renúncia do presidente Richard Nixon.",
-      "enron": "Enron foi um grande escândalo corporativo. A empresa inflou lucros e ocultou dívidas com estruturas fora do balanço, culminando em falência e reformas regulatórias.",
-      "probabilidade": "Probabilidade é uma medida entre 0 e 1 para quantificar a chance de um evento sob um modelo. Em investigação, probabilidades devem ser interpretadas com cautela e contexto.",
-      "sigilo": "Sigilo operacional exige comunicação segura, canais restritos, registro de acessos e exposição mínima de dados sensíveis.",
-      "forense digital": "Forense digital é a coleta e análise técnica de vestígios eletrônicos com preservação de integridade, cadeia de custódia e documentação adequada.",
-      "ia": "Neste site, o modo Conversa não é uma IA real. É apenas um sistema de respostas fixas acionadas por palavras-chave para apoio conceitual e navegação.",
-      "missão": "A missão deve conter título, ID do projeto, responsável, objetivo, etapas OSINT, ferramentas, linha do tempo e observações éticas.",
-      "investigação": "Investigação é a busca sistemática de fatos para esclarecer acontecimentos. O método exige perguntas boas, documentação clara, validação independente e humildade intelectual."
-    };
+  <!-- HERO + LANGUAGE + LINKS -->
+  <div class="hero">
+    <div class="hero-card">
+      <span class="eyebrow" id="heroEyebrow">[ Secure Network ] • [ Operational Core ] • [ Remote Investigation ]</span>
+      <h1>Ａ.Ｘ.Ｉ.Ｏ.Ｍ.</h1>
+      <p class="subtitle">
+        <strong id="heroStrong">X-Intelligence Agency & Multimodal Operations</strong><br>
+        <span id="heroDesc">A visual portal for investigation organization, evidentiary reasoning, OSINT triage, geolocation, case chronology, and ethical protocols.</span>
+      </p>
 
-    const aliases = {
-      "maps":"geolocalização",
-      "earth":"geolocalização",
-      "street view":"geolocalização",
-      "pim eyes":"pimeyes",
-      "wayback":"wayback machine",
-      "cronologia":"linha do tempo",
-      "osint inicial":"osint",
-      "dados":"evidência",
-      "evidencias":"evidência",
-      "evidencias verificaveis":"evidência",
-      "privacidade":"lgpd",
-      "governança":"transparência",
-      "governanca":"transparência",
-      "detetive":"observador autodidata",
-      "moriarty":"investigação",
-      "método":"raciocínio evidencial",
-      "metodo":"raciocínio evidencial"
-    };
+      <!-- LANGUAGE SELECTOR -->
+      <div class="lang-selector" id="langSelector">
+        <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
+        <button class="lang-btn" data-lang="pt-BR">🇧🇷 PT-BR</button>
+        <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+        <button class="lang-btn" data-lang="ru">🇷🇺 RU</button>
+        <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
+      </div>
 
-    const list = document.getElementById('dictionaryList');
-    const chatLog = document.getElementById('chatLog');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const clearChat = document.getElementById('clearChat');
+      <!-- COURSE LINKS -->
+      <div class="course-links">
+        <a class="course-btn" href="https://purplemurasaki38.github.io/A-X-I-O-M---FRAN-AIS-EDITION/" target="_blank">🇫🇷 AXIOM FR</a>
+        <a class="course-btn" href="https://purplemurasaki38.github.io/A-X-I-O-M-Japanese-Edition/" target="_blank">🇯🇵 AXIOM JP</a>
+        <a class="course-btn" href="https://purplemurasaki38.github.io/AXIOM-PALACE-IN-RUSSIAN/" target="_blank">🇷🇺 AXIOM RU</a>
+        <a class="course-btn" href="https://purplemurasaki38.github.io/Academy-Spade-Battleground-Pentest/" target="_blank">⚔️ Spade BG</a>
+        <a class="course-btn" href="https://purplemurasaki38.github.io/curso-baralho-de-spadas-pentest-nivel-militar/" target="_blank">🃏 Spades Pentest</a>
+        <a class="course-btn" href="https://purplemurasaki38.github.io/Lua-Palida-Carlos-Acutis/" target="_blank">🌙 Lua Pálida</a>
+        <a class="course-btn" href="https://purplemurasaki38.github.io/Baralho-Rei-De-Sangue-Soberano/" target="_blank">🃏 Rei Sangue</a>
+        <a class="course-btn" href="https://purplemurasaki38.github.io/D-E-C-K-S-H-E-L-L/" target="_blank">💻 DECK SHELL</a>
+        <a class="course-btn" href="https://purplemurasaki38.github.io/B-A-R-A-L-H-O-D-O-Y-U-R-I/" target="_blank">🎴 Baralho Yuri</a>
+      </div>
 
-    const keys = Object.keys(dictionary).sort((a,b)=>a.localeCompare(b, 'pt-BR'));
+      <div class="grid-top">
+        <div class="panel">
+          <h2 id="panel1Title">Central HQ</h2>
+          <p style="line-height:1.8; color:var(--muted); margin:0" id="panel1Desc">
+            This is the central HQ for investigators. Here, intuition meets precision. For beginners, the path to case resolution is based on remote investigation methodology, disciplined evidence recording, and building auditable hypotheses.
+          </p>
+          <div class="badge-grid">
+            <div class="badge"><b id="badge1">OSINT</b><br><span id="badge1Desc">Advanced searches, Dorks, cross-referencing sources.</span></div>
+            <div class="badge"><b id="badge2">Geo</b><br><span id="badge2Desc">Maps, Earth & Street View as eye extensions.</span></div>
+            <div class="badge"><b id="badge3">Data</b><br><span id="badge3Desc">Patterns, networks, profiles, signals & correlation.</span></div>
+            <div class="badge"><b id="badge4">Timeline</b><br><span id="badge4Desc">Timeline to detect gaps.</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h2 id="consoleTitle">Status Console</h2>
+          <div class="terminal-box" id="bootLog">
+            <div class="line"><span class="prompt">axiom@core:~$</span> boot --secure</div>
+            <div class="line"><span class="dim">[OK]</span> <span id="boot1">Secure channel initialized</span></div>
+            <div class="line"><span class="dim">[OK]</span> <span id="boot2">OSINT modules loaded</span></div>
+            <div class="line"><span class="dim">[OK]</span> <span id="boot3">Ethical rules bound</span></div>
+            <div class="line"><span class="dim">[OK]</span> <span id="boot4">Conversational dictionary available</span></div>
+            <div class="line"><span class="prompt">axiom@core:~$</span> status</div>
+            <div class="line"><span id="boot5">Ready for organized investigation.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    function addBubble(text, cls='bot'){
-      const el = document.createElement('div');
-      el.className = `bubble ${cls}`;
-      el.innerHTML = text;
-      chatLog.appendChild(el);
-      chatLog.scrollTop = chatLog.scrollHeight;
-    }
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="nav-inner">
+      <button class="active" onclick="showSection('inicio')">🏠 <span id="navHome">Home</span></button>
+      <button onclick="showSection('osint')">🕵️ <span id="navOsint">OSINT</span></button>
+      <button onclick="showSection('terminal')">💻 <span id="navTerm">Terminal</span></button>
+      <button onclick="showSection('kali')">🐉 <span id="navKali">Kali</span></button>
+      <button onclick="showSection('dorks')">🔍 <span id="navDorks">Dorks</span></button>
+      <button onclick="showSection('modules')">📚 <span id="navModules">Modules</span></button>
+      <button onclick="showSection('missao')">🎯 <span id="navMission">Mission</span></button>
+      <button onclick="showSection('chat')">💬 <span id="navChat">Chat</span></button>
+      <button onclick="showSection('links')">🔗 <span id="navLinks">Links</span></button>
+      <button onclick="showSection('jobs')">💰 <span id="navJobs">Jobs</span></button>
+    </div>
+  </nav>
 
-    function normalize(text=''){
-      return text
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9\s]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
+  <!-- SECTION: HOME -->
+  <div id="inicio" class="section active">
+    <h2 id="homeTitle" style="font-size:28px;letter-spacing:.15em;">🏠 CENTRAL HQ</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;">
+      <div class="osint-tool" style="padding:25px;">
+        <h3>🔍 <span id="homeFeature1">Google Dorks Executor</span></h3>
+        <p id="homeDesc1">Professional engine for advanced dorks with real-time results.</p>
+      </div>
+      <div class="osint-tool" style="padding:25px;">
+        <h3>📧 <span id="homeFeature2">Email Intelligence</span></h3>
+        <p id="homeDesc2">Complete analysis: leaks, social networks, reputation, geolocation.</p>
+      </div>
+      <div class="osint-tool" style="padding:25px;">
+        <h3>🌐 <span id="homeFeature3">Domain Recon</span></h3>
+        <p id="homeDesc3">Subdomains, tech stack, exposed directories, fingerprinting.</p>
+      </div>
+    </div>
+  </div>
 
-    function resolveTerm(raw){
-      const n = normalize(raw);
-      if(!n) return null;
+  <!-- SECTION: OSINT -->
+  <div id="osint" class="section">
+    <h2 style="font-size:28px;letter-spacing:.15em;">🕵️ <span id="osintTitle">OSINT OPERATIONS CENTER</span></h2>
+    
+    <div class="osint-tool">
+      <h3>📧 <span id="emailTitle">Email Reconnaissance</span></h3>
+      <input id="emailTarget" class="osint-input" placeholder="target@exemplo.com">
+      <button class="btn-osint" onclick="runEmailOSINT()">🚀 <span id="emailBtn">EXECUTE RECON</span></button>
+      <div id="emailResults" class="osint-results" style="display:none;"></div>
+    </div>
 
-      for(const key of Object.keys(dictionary)){
-        if(normalize(key) === n) return key;
-      }
-      for(const [alias, target] of Object.entries(aliases)){
-        if(normalize(alias) === n) return target;
-      }
-      for(const key of Object.keys(dictionary)){
-        if(normalize(key).includes(n) || n.includes(normalize(key))) return key;
-      }
-      for(const [alias, target] of Object.entries(aliases)){
-        if(normalize(alias).includes(n) || n.includes(normalize(alias))) return target;
-      }
-      return null;
-    }
+    <div class="osint-tool">
+      <h3>🌐 <span id="domainTitle">Domain Enumeration</span></h3>
+      <input id="domainTarget" class="osint-input" placeholder="exemplo.com">
+      <button class="btn-osint" onclick="runDomainOSINT()">🔎 <span id="domainBtn">ENUMERATE</span></button>
+      <div id="domainResults" class="osint-results" style="display:none;"></div>
+    </div>
 
-    function answerQuery(query){
-      const term = resolveTerm(query);
-      if(term){
-        return `<strong>${term.toUpperCase()}</strong><br>${dictionary[term]}`;
-      }
-      return `Termo não encontrado no dicionário operacional. Tente algo como <strong>OSINT</strong>, <strong>hipótese</strong>, <strong>ética</strong>, <strong>triangulação</strong>, <strong>LGPD</strong>, <strong>Watergate</strong> ou <strong>Enron</strong>.`;
-    }
+    <div class="osint-tool">
+      <h3>📱 <span id="phoneTitle">Phone Intelligence</span></h3>
+      <input id="phoneTarget" class="osint-input" placeholder="+5511999999999">
+      <button class="btn-osint" onclick="runPhoneOSINT()">📊 <span id="phoneBtn">ANALYZE</span></button>
+      <div id="phoneResults" class="osint-results" style="display:none;"></div>
+    </div>
+  </div>
 
-    keys.forEach((key, index)=>{
-      const btn = document.createElement('button');
-      btn.className = 'dict-btn';
-      btn.textContent = key;
-      btn.addEventListener('click', ()=>{
-        document.querySelectorAll('.dict-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        addBubble(key, 'user');
-        addBubble(answerQuery(key), 'bot');
-      });
-      list.appendChild(btn);
-      if(index < 1) btn.classList.add('active');
+  <!-- SECTION: TERMINAL -->
+  <div id="terminal" class="section">
+    <h2 style="font-size:28px;letter-spacing:.15em;">💻 <span id="termTitle">AXIOM TERMINAL</span></h2>
+    <div class="terminal-box" id="mainTerminal" style="height:350px;">
+      <div style="color:var(--accent-green);">=== A.X.I.O.M. Terminal - ADMIN MODE ===</div>
+      <div>ADMIN authenticated ✓</div>
+      <div>OSINT Framework: 100% operational</div>
+      <div style="color:#caffde;">></div>
+    </div>
+    <input id="terminalInput" class="osint-input" placeholder="Type OSINT command..." onkeydown="handleTerminal(event)">
+  </div>
+
+  <!-- SECTION: KALI -->
+  <div id="kali" class="section">
+    <h2 style="font-size:28px;letter-spacing:.15em;">🐉 <span id="kaliTitle">KALI LINUX - Installation & 100+ Tools</span></h2>
+    
+    <div class="tool-grid">
+      <div class="osint-tool">
+        <h3><span id="kaliInstall">Kali 2024 Installation</span></h3>
+        <div class="osint-results" style="display:block;max-height:200px;">
+# Installation of Kali Linux
+sudo apt update && sudo apt full-upgrade -y
+sudo apt install -y kali-linux-headless
+
+# Recommended: VMware / VirtualBox
+# RAM: 4GB, CPU: 2 cores, Disk: 60GB
+        </div>
+      </div>
+      <div class="osint-tool">
+        <h3><span id="kaliTools">Essential Tools</span></h3>
+        <div class="osint-results" style="display:block;max-height:200px;">
+sudo apt install -y nmap hydra sqlmap nikto dirb \
+  gobuster john hashcat burpsuite \
+  metasploit-framework aircrack-ng wfuzz \
+  dirsearch ffuf exploitdb
+        </div>
+      </div>
+    </div>
+
+    <div class="osint-tool">
+      <h3>🔥 <span id="kaliArsenal">Kali Complete Arsenal</span></h3>
+      <div class="osint-results" style="display:block;max-height:300px;">
+# Reconnaissance
+nmap masscan amass sublist3r theharvester recon-ng maltego
+
+# Web Applications
+burpsuite sqlmap nikto dirbuster gobuster wfuzz ffuf whatweb wappalyzer
+
+# Passwords
+hydra john hashcat crunch cewl
+
+# Exploitation
+metasploit-framework searchsploit exploitdb msfvenom
+
+# Wireless
+aircrack-ng reaver wifite kismet
+
+# Network
+wireshark tcpdump tshark bettercap ettercap dnschef
+
+# Post-exploitation
+mimikatz bloodhound impacket crackmapexec
+
+# Social Engineering
+setoolkit gophish beef-project
+
+# Forensics
+autopsy sleuthkit binwalk volatility
+
+# Others
+hydra medusa patator fcrackzip rsakeybreak
+      </div>
+    </div>
+
+    <h2 style="font-size:24px;letter-spacing:.1em;margin-top:30px;">⚔️ <span id="pentestTitle">Complete Pentest Phases</span></h2>
+    <div class="tool-grid">
+      <div class="osint-tool">
+        <h3>1. <span id="phase1">Reconnaissance</span></h3>
+        <div class="osint-results" style="display:block;max-height:180px;">
+theharvester -d example.com -b google,linkedin
+amass enum -d example.com
+sublist3r -d example.com
+        </div>
+      </div>
+      <div class="osint-tool">
+        <h3>2. <span id="phase2">Scanning</span></h3>
+        <div class="osint-results" style="display:block;max-height:180px;">
+nmap -sC -sV -p- example.com
+nikto -h example.com
+dirsearch -u https://example.com
+        </div>
+      </div>
+      <div class="osint-tool">
+        <h3>3. <span id="phase3">Brute Force</span></h3>
+        <div class="osint-results" style="display:block;max-height:180px;">
+hydra -L users.txt -P pass.txt example.com http-post-form "/login:user=^USER^&pass=^PASS^:F"
+ffuf -u https://example.com/FUZZ -w wordlist.txt
+        </div>
+      </div>
+      <div class="osint-tool">
+        <h3>4. <span id="phase4">Exploitation</span></h3>
+        <div class="osint-results" style="display:block;max-height:180px;">
+searchsploit apache 2.4.49
+msfconsole -q
+use exploit/multi/http/apache_mod_proxy
+set RHOSTS target.com
+run
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: DORKS -->
+  <div id="dorks" class="section">
+    <h2 style="font-size:28px;letter-spacing:.15em;">🔍 <span id="dorksTitle">Google Dorks Professional</span></h2>
+    <div class="osint-tool">
+      <h3><span id="dorksEngine">Dork Engine</span></h3>
+      <textarea id="dorkInput" class="osint-input" rows="4" placeholder='inurl:admin filetype:sql "username" OR site:*.gov.br intitle:"index of"'></textarea>
+      <button class="btn-osint" onclick="executeDork()">🚀 <span id="dorksExecute">EXECUTE DORK</span></button>
+      <button class="btn-osint secondary" onclick="loadPresetDorks()">📋 <span id="dorksPreset">PRESETS</span></button>
+      <div id="dorkOutput" class="osint-results" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- SECTION: MODULES -->
+  <div id="modules" class="section">
+    <h2 style="font-size:28px;letter-spacing:.15em;">📚 <span id="modulesTitle">40 Course Modules</span></h2>
+    <div id="moduleGrid" class="module-grid"></div>
+  </div>
+
+  <!-- SECTION: MISSION -->
+  <div id="missao" class="section">
+    <h2 style="font-size:28px;letter-spacing:.15em;">🎯 <span id="missionTitleS">OPERATIONAL PANEL</span></h2>
+    <div class="osint-tool">
+      <h3><span id="missionIdLabel">Mission ID</span>: <span id="missionID" style="color:var(--accent-green);font-size:26px;">#AXIOM-001</span></h3>
+      <textarea id="missionContent" class="mission-area" placeholder="Operation details..."></textarea>
+      <button class="btn-osint" onclick="saveOperation()" style="width:auto;font-size:18px;padding:22px 45px;">💾 <span id="saveMissionBtn">ARCHIVE OPERATION</span></button>
+    </div>
+    <div class="mission-template" id="missionTemplate">📍 <span id="mtTitle">MISSION TITLE</span>: [Case Name]
+📁 <span id="mtId">PROJECT ID</span>: [Ex: #000]
+👤 <span id="mtAgent">RESPONSIBLE</span>: [Agent Name]
+
+🎯 <span id="mtObjective">OBJECTIVE</span>:
+[Describe what must be achieved]
+
+🔎 <span id="mtSteps">INVESTIGATION STEPS (OSINT Based)</span>:
+
+    [ ] <span id="mtStep1">Online Research</span>: [Sources/Links]
+    [ ] <span id="mtStep2">Geolocation</span>: [Location details]
+    [ ] <span id="mtStep3">Network Analysis</span>: [Profiles/Interactions]
+    [ ] <span id="mtStep4">Evidence Collection</span>: [Screenshots/Testimonies]
+    [ ] <span id="mtStep5">Timeline</span>: [Chronological events]
+
+🛠️ <span id="mtTools">RECOMMENDED TOOLS</span>:
+[Ex: Maltego, Google Dorks, Wayback Machine]
+
+⚠️ <span id="mtNotes">OBSERVATIONS / NOTES</span>:
+[Privacy and Ethics: Do not invade systems without authorization.]</div>
+  </div>
+
+  <!-- SECTION: CHAT -->
+  <div id="chat" class="section">
+    <h2 style="font-size:28px;letter-spacing:.15em;">💬 <span id="chatTitle">Chat Mode — Operational Dictionary</span></h2>
+    <p style="color:var(--muted); margin-bottom:18px;" id="chatDesc">
+      This module responds based on a fixed dictionary of terms, protocols, and investigation concepts. Click a term or type a keyword.
+    </p>
+
+    <div class="chat-shell">
+      <aside class="dictionary-list" id="dictionaryList"></aside>
+      <div class="chat-box">
+        <div class="chat-head">
+          <div>
+            <div class="chat-status" id="chatStatus">Chat Module • Simulated</div>
+            <div class="chat-note" id="chatStatusNote">Based on keywords, definitions, and pre-loaded protocols.</div>
+          </div>
+          <button class="btn-osint" id="clearChat" style="padding:10px 16px;font-size:12px;">🗑️ <span id="clearLogBtn">Clear Log</span></button>
+        </div>
+        <div class="chat-log" id="chatLog">
+          <div class="bubble bot" id="welcomeMsg">Greetings, agent. Consult terms like <strong>OSINT</strong>, <strong>hypothesis</strong>, <strong>triangulation</strong>, <strong>ethics</strong>, <strong>Watergate</strong>, <strong>Enron</strong>, <strong>GDPR</strong> or <strong>timeline</strong>.</div>
+        </div>
+        <div class="chat-input">
+          <input id="userInput" type="text" placeholder="Type a term, tool, or concept...">
+          <button class="btn-osint" id="sendBtn" style="padding:14px 20px;">🔍 <span id="queryBtn">Query</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: LINKS -->
+  <div id="links" class="section">
+    <h2 style="font-size:28px;letter-spacing:.15em;">🔗 <span id="linksTitle">External Intelligence</span></h2>
+    <div class="links-grid">
+      <a href="https://purplemurasaki38.github.io/Baralho-Rei-De-Sangue-Soberano/" target="_blank" class="link-card">
+        <h3>🃏 Baralho Rei de Sangue Soberano</h3>
+        <p>External intelligence portal - Level 1</p>
+      </a>
+      <a href="https://purplemurasaki38.github.io/D-E-C-K-S-H-E-L-L/" target="_blank" class="link-card">
+        <h3>💻 D.E.C.K. S.H.E.L.L.</h3>
+        <p>Advanced shell terminal - Level 2</p>
+      </a>
+      <a href="https://purplemurasaki38.github.io/B-A-R-A-L-H-O-D-O-Y-U-R-I/" target="_blank" class="link-card">
+        <h3>🎴 Baralho do Yuri</h3>
+        <p>Special resources - Level 3</p>
+      </a>
+      <a href="https://purplemurasaki38.github.io/A-X-I-O-M---FRAN-AIS-EDITION/" target="_blank" class="link-card">
+        <h3>🇫🇷 AXIOM Édition Française</h3>
+        <p>French version - Pentest & Web Dev</p>
+      </a>
+      <a href="https://purplemurasaki38.github.io/A-X-I-O-M-Japanese-Edition/" target="_blank" class="link-card">
+        <h3>🇯🇵 AXIOM 日本語版</h3>
+        <p>Japanese version - Pentest & Web Dev</p>
+      </a>
+      <a href="https://purplemurasaki38.github.io/AXIOM-PALACE-IN-RUSSIAN/" target="_blank" class="link-card">
+        <h3>🇷🇺 AXIOM Русская версия</h3>
+        <p>Russian version - Pentest & Web Dev</p>
+      </a>
+      <a href="https://purplemurasaki38.github.io/Academy-Spade-Battleground-Pentest/" target="_blank" class="link-card">
+        <h3>⚔️ Spade Battleground</h3>
+        <p>Pentest training academy</p>
+      </a>
+      <a href="https://purplemurasaki38.github.io/curso-baralho-de-spadas-pentest-nivel-militar/" target="_blank" class="link-card">
+        <h3>🃏 Spades Pentest</h3>
+        <p>Military level pentest course</p>
+      </a>
+      <a href="https://purplemurasaki38.github.io/Lua-Palida-Carlos-Acutis/" target="_blank" class="link-card">
+        <h3>🌙 Lua Pálida</h3>
+        <p>Carlos Acutis - Supplementary portal</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- SECTION: JOBS -->
+  <div id="jobs" class="section">
+    <h2 style="font-size:28px;letter-spacing:.15em;">💰 <span id="jobsTitle">Earn $1k–$5k/month</span></h2>
+    <div class="tool-grid">
+      <div class="osint-tool" style="padding:25px;">
+        <h3>🏆 <span id="jobs1">Bug Bounty</span></h3>
+        <p id="jobs1Desc">HackerOne / Bugcrowd / Intigriti<br>$100–$10,000 per vulnerability<br>Google, Facebook, Uber pay well</p>
+      </div>
+      <div class="osint-tool" style="padding:25px;">
+        <h3>💼 <span id="jobs2">Freelance Pentest</span></h3>
+        <p id="jobs2Desc">Upwork / Toptal / Freelancer<br>$500–$5,000 per project<br>High demand from SMEs</p>
+      </div>
+      <div class="osint-tool" style="padding:25px;">
+        <h3>🎓 <span id="jobs3">Certifications</span></h3>
+        <p id="jobs3Desc">eJPT: $300<br>OSCP: $1,500<br>CEH: $500<br>CompTIA PenTest+: $400</p>
+      </div>
+      <div class="osint-tool" style="padding:25px;">
+        <h3>🚀 <span id="jobs4">3-Month Roadmap</span></h3>
+        <p id="jobs4Desc"><strong>Month 1:</strong> Kali, Linux, Recon, Scan<br>
+        <strong>Month 2:</strong> Web Vulns, Exploitation<br>
+        <strong>Month 3:</strong> Bug Bounty, Job Search, OSCP prep</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span id="footerText">Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — X-Intelligence Agency & Multimodal Operations • Static interface • organized, ethical, auditable investigation.</span>
+  </footer>
+</div>
+
+<script>
+// ===== MULTI-LANGUAGE DICTIONARY =====
+const translations = {
+  "en": {
+    heroEyebrow: "[ Secure Network ] • [ Operational Core ] • [ Remote Investigation ]",
+    heroStrong: "X-Intelligence Agency & Multimodal Operations",
+    heroDesc: "A visual portal for investigation organization, evidentiary reasoning, OSINT triage, geolocation, case chronology, and ethical protocols.",
+    panel1Title: "Central HQ",
+    panel1Desc: "This is the central HQ for investigators. Here, intuition meets precision. For beginners, the path to case resolution is based on remote investigation methodology, disciplined evidence recording, and building auditable hypotheses.",
+    badge1: "OSINT", badge1Desc: "Advanced searches, Dorks, cross-referencing sources.",
+    badge2: "Geo", badge2Desc: "Maps, Earth & Street View as eye extensions.",
+    badge3: "Data", badge3Desc: "Patterns, networks, profiles, signals & correlation.",
+    badge4: "Timeline", badge4Desc: "Timeline to detect gaps.",
+    consoleTitle: "Status Console",
+    boot1: "Secure channel initialized",
+    boot2: "OSINT modules loaded",
+    boot3: "Ethical rules bound",
+    boot4: "Conversational dictionary available",
+    boot5: "Ready for organized investigation.",
+    navHome: "Home", navOsint: "OSINT", navTerm: "Terminal", navKali: "Kali",
+    navDorks: "Dorks", navModules: "Modules", navMission: "Mission", navChat: "Chat",
+    navLinks: "Links", navJobs: "Jobs",
+    homeTitle: "CENTRAL HQ",
+    homeFeature1: "Google Dorks Executor", homeDesc1: "Professional engine for advanced dorks with real-time results.",
+    homeFeature2: "Email Intelligence", homeDesc2: "Complete analysis: leaks, social networks, reputation, geolocation.",
+    homeFeature3: "Domain Recon", homeDesc3: "Subdomains, tech stack, exposed directories, fingerprinting.",
+    osintTitle: "OSINT OPERATIONS CENTER",
+    emailTitle: "Email Reconnaissance", emailBtn: "EXECUTE RECON",
+    domainTitle: "Domain Enumeration", domainBtn: "ENUMERATE",
+    phoneTitle: "Phone Intelligence", phoneBtn: "ANALYZE",
+    termTitle: "AXIOM TERMINAL",
+    kaliTitle: "KALI LINUX - Installation & 100+ Tools",
+    kaliInstall: "Kali 2024 Installation", kaliTools: "Essential Tools", kaliArsenal: "Kali Complete Arsenal",
+    pentestTitle: "Complete Pentest Phases",
+    phase1: "Reconnaissance", phase2: "Scanning", phase3: "Brute Force", phase4: "Exploitation",
+    dorksTitle: "Google Dorks Professional", dorksEngine: "Dork Engine",
+    dorksExecute: "EXECUTE DORK", dorksPreset: "PRESETS",
+    modulesTitle: "40 Course Modules",
+    missionTitleS: "OPERATIONAL PANEL", missionIdLabel: "Mission ID", saveMissionBtn: "ARCHIVE OPERATION",
+    mtTitle: "MISSION TITLE", mtId: "PROJECT ID", mtAgent: "RESPONSIBLE",
+    mtObjective: "OBJECTIVE", mtSteps: "INVESTIGATION STEPS (OSINT Based)",
+    mtStep1: "Online Research", mtStep2: "Geolocation", mtStep3: "Network Analysis",
+    mtStep4: "Evidence Collection", mtStep5: "Timeline",
+    mtTools: "RECOMMENDED TOOLS", mtNotes: "OBSERVATIONS / NOTES",
+    chatTitle: "Chat Mode — Operational Dictionary",
+    chatDesc: "This module responds based on a fixed dictionary of terms, protocols, and investigation concepts. Click a term or type a keyword.",
+    chatStatus: "Chat Module • Simulated", chatStatusNote: "Based on keywords, definitions, and pre-loaded protocols.",
+    welcomeMsg: 'Greetings, agent. Consult terms like <strong>OSINT</strong>, <strong>hypothesis</strong>, <strong>triangulation</strong>, <strong>ethics</strong>, <strong>Watergate</strong>, <strong>Enron</strong>, <strong>GDPR</strong> or <strong>timeline</strong>.',
+    clearLogBtn: "Clear Log", queryBtn: "Query",
+    linksTitle: "External Intelligence",
+    jobsTitle: "Earn $1k–$5k/month",
+    jobs1: "Bug Bounty", jobs1Desc: "HackerOne / Bugcrowd / Intigriti<br>$100–$10,000 per vulnerability<br>Google, Facebook, Uber pay well",
+    jobs2: "Freelance Pentest", jobs2Desc: "Upwork / Toptal / Freelancer<br>$500–$5,000 per project<br>High demand from SMEs",
+    jobs3: "Certifications", jobs3Desc: "eJPT: $300<br>OSCP: $1,500<br>CEH: $500<br>CompTIA PenTest+: $400",
+    jobs4: "3-Month Roadmap", jobs4Desc: "<strong>Month 1:</strong> Kali, Linux, Recon, Scan<br><strong>Month 2:</strong> Web Vulns, Exploitation<br><strong>Month 3:</strong> Bug Bounty, Job Search, OSCP prep",
+    footerText: "Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — X-Intelligence Agency & Multimodal Operations • Static interface • organized, ethical, auditable investigation.",
+    userInput: "Type a term, tool, or concept..."
+  },
+  "pt-BR": {
+    heroEyebrow: "[ Rede Segura ] • [ Núcleo Operacional ] • [ Investigação Remota ]",
+    heroStrong: "Agência de X-Inteligência e Operações Multimodais",
+    heroDesc: "Um portal visual para organização de investigações, raciocínio evidencial, triagem OSINT, geolocalização, cronologia de casos e protocolos éticos.",
+    panel1Title: "QG Central",
+    panel1Desc: "Este é o QG central para investigadores. Aqui, a intuição encontra a precisão. Para quem está começando, o caminho para a resolução de casos se baseia na metodologia de investigação remota, registro disciplinado de evidências e montagem de hipóteses auditáveis.",
+    badge1: "OSINT", badge1Desc: "Buscas avançadas, Dorks, cruzamento de fontes.",
+    badge2: "Geo", badge2Desc: "Maps, Earth e Street View como extensões dos olhos.",
+    badge3: "Dados", badge3Desc: "Padrões, redes, perfis, sinais e correlação.",
+    badge4: "Cronologia", badge4Desc: "Linha do tempo para detectar lacunas.",
+    consoleTitle: "Console de Estado",
+    boot1: "Canal seguro inicializado",
+    boot2: "Módulos OSINT carregados",
+    boot3: "Regras éticas vinculadas",
+    boot4: "Dicionário conversacional disponível",
+    boot5: "Pronto para investigação organizada.",
+    navHome: "Início", navOsint: "OSINT", navTerm: "Terminal", navKali: "Kali",
+    navDorks: "Dorks", navModules: "Módulos", navMission: "Missão", navChat: "Chat",
+    navLinks: "Links", navJobs: "Trabalhos",
+    homeTitle: "QG CENTRAL",
+    homeFeature1: "Executor Google Dorks", homeDesc1: "Engine profissional para dorks avançados com resultados em tempo real.",
+    homeFeature2: "Inteligência de Email", homeDesc2: "Análise completa: leaks, redes sociais, reputação, geolocalização.",
+    homeFeature3: "Recon de Domínio", homeDesc3: "Subdomínios, tech stack, diretórios expostos, fingerprinting.",
+    osintTitle: "CENTRO OSINT OPERACIONAL",
+    emailTitle: "Reconhecimento de Email", emailBtn: "EXECUTAR RECON",
+    domainTitle: "Enumeração de Domínio", domainBtn: "ENUMERAR",
+    phoneTitle: "Inteligência Telefônica", phoneBtn: "ANALISAR",
+    termTitle: "TERMINAL AXIOM",
+    kaliTitle: "KALI LINUX - Instalação & 100+ Ferramentas",
+    kaliInstall: "Instalação Kali 2024", kaliTools: "Ferramentas Essenciais", kaliArsenal: "Arsenal Completo Kali",
+    pentestTitle: "Fases Completas do Pentest",
+    phase1: "Reconhecimento", phase2: "Escaneamento", phase3: "Força Bruta", phase4: "Exploração",
+    dorksTitle: "Google Dorks Profissional", dorksEngine: "Motor de Dorks",
+    dorksExecute: "EXECUTAR DORK", dorksPreset: "PRESETS",
+    modulesTitle: "40 Módulos do Curso",
+    missionTitleS: "PAINEL OPERACIONAL", missionIdLabel: "ID da Missão", saveMissionBtn: "ARQUIVAR OPERAÇÃO",
+    mtTitle: "TÍTULO DA MISSÃO", mtId: "ID DO PROJETO", mtAgent: "RESPONSÁVEL",
+    mtObjective: "OBJETIVO", mtSteps: "ETAPAS DE INVESTIGAÇÃO (Baseado em OSINT)",
+    mtStep1: "Pesquisa Online", mtStep2: "Geolocalização", mtStep3: "Análise de Redes",
+    mtStep4: "Coleta de Provas", mtStep5: "Linha do Tempo",
+    mtTools: "FERRAMENTAS RECOMENDADAS", mtNotes: "OBSERVAÇÕES / NOTAS",
+    chatTitle: "Modo Conversa — Dicionário Operacional",
+    chatDesc: "Este módulo responde com base em um dicionário fixo de termos, protocolos e conceitos de investigação. Clique em um termo ou digite uma palavra-chave.",
+    chatStatus: "Módulo de Conversa • Simulado", chatStatusNote: "Baseado em palavras-chave, definições e protocolos pré-carregados.",
+    welcomeMsg: 'Saudações, agente. Consulte termos como <strong>OSINT</strong>, <strong>hipótese</strong>, <strong>triangulação</strong>, <strong>ética</strong>, <strong>Watergate</strong>, <strong>Enron</strong>, <strong>LGPD</strong> ou <strong>linha do tempo</strong>.',
+    clearLogBtn: "Limpar Log", queryBtn: "Consultar",
+    linksTitle: "Inteligência Externa",
+    jobsTitle: "Ganhe $1k–$5k/mês",
+    jobs1: "Bug Bounty", jobs1Desc: "HackerOne / Bugcrowd / Intigriti<br>$100–$10.000 por vulnerabilidade<br>Google, Facebook, Uber pagam bem",
+    jobs2: "Pentest Freelancer", jobs2Desc: "Upwork / Toptal / Freelancer<br>$500–$5.000 por projeto<br>Alta demanda de PMEs",
+    jobs3: "Certificações", jobs3Desc: "eJPT: $300<br>OSCP: $1.500<br>CEH: $500<br>CompTIA PenTest+: $400",
+    jobs4: "Roadmap 3 Meses", jobs4Desc: "<strong>Mês 1:</strong> Kali, Linux, Recon, Scan<br><strong>Mês 2:</strong> Web Vulns, Exploração<br><strong>Mês 3:</strong> Bug Bounty, Busca de Emprego, preparação OSCP",
+    footerText: "Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — Agência de X-Inteligência e Operações Multimodais • Interface estática • investigação organizada, ética e auditável.",
+    userInput: "Digite um termo, ferramenta ou conceito..."
+  },
+  "fr": {
+    heroEyebrow: "[ Réseau Sécurisé ] • [ Noyau Opérationnel ] • [ Investigation à Distance ]",
+    heroStrong: "Agence de X-Intelligence et Opérations Multimodales",
+    heroDesc: "Un portail visuel pour l'organisation des enquêtes, le raisonnement probatoire, le tri OSINT, la géolocalisation, la chronologie des affaires et les protocoles éthiques.",
+    panel1Title: "QG Central",
+    panel1Desc: "Le QG central pour les enquêteurs. Ici, l'intuition rencontre la précision.",
+    badge1: "OSINT", badge1Desc: "Recherches avancées, Dorks, croisement de sources.",
+    badge2: "Géo", badge2},
+  "fr": {
+    heroEyebrow: "[ Réseau Sécurisé ] • [ Noyau Opérationnel ] • [ Investigation à Distance ]",
+    heroStrong: "Agence de X-Intelligence et Opérations Multimodales",
+    heroDesc: "Un portail visuel pour l'organisation des enquêtes, le raisonnement probatoire, le tri OSINT, la géolocalisation, la chronologie des affaires et les protocoles éthiques.",
+    panel1Title: "QG Central",
+    panel1Desc: "Le QG central pour les enquêteurs. Ici, l'intuition rencontre la précision.",
+    badge1: "OSINT", badge1Desc: "Recherches avancées, Dorks, croisement de sources.",
+    badge2: "Géo", badge2Desc: "Maps, Earth et Street View comme extensions des yeux.",
+    badge3: "Données", badge3Desc: "Modèles, réseaux, profils, signaux et corrélation.",
+    badge4: "Chronologie", badge4Desc: "Timeline pour détecter les lacunes.",
+    consoleTitle: "Console d'État",
+    boot1: "Canal sécurisé initialisé",
+    boot2: "Modules OSINT chargés",
+    boot3: "Règles éthiques liées",
+    boot4: "Dictionnaire conversationnel disponible",
+    boot5: "Prêt pour une enquête organisée.",
+    navHome: "Accueil", navOsint: "OSINT", navTerm: "Terminal", navKali: "Kali",
+    navDorks: "Dorks", navModules: "Modules", navMission: "Mission", navChat: "Chat",
+    navLinks: "Liens", navJobs: "Emplois",
+    homeTitle: "QG CENTRAL",
+    homeFeature1: "Exécuteur Google Dorks", homeDesc1: "Moteur pro pour dorks avancés avec résultats en temps réel.",
+    homeFeature2: "Renseignement Email", homeDesc2: "Analyse complète: fuites, réseaux sociaux, réputation, géoloc.",
+    homeFeature3: "Recon Domaine", homeDesc3: "Sous-domaines, stack technique, répertoires exposés, empreinte.",
+    osintTitle: "CENTRE OPÉRATIONS OSINT",
+    emailTitle: "Reconnaissance Email", emailBtn: "EXÉCUTER RECON",
+    domainTitle: "Énumération Domaine", domainBtn: "ÉNUMÉRER",
+    phoneTitle: "Renseignement Téléphone", phoneBtn: "ANALYSER",
+    termTitle: "TERMINAL AXIOM",
+    kaliTitle: "KALI LINUX - Installation & 100+ Outils",
+    kaliInstall: "Installation Kali 2024", kaliTools: "Outils Essentiels", kaliArsenal: "Arsenal Complet Kali",
+    pentestTitle: "Phases Complètes du Pentest",
+    phase1: "Reconnaissance", phase2: "Scan", phase3: "Force Brute", phase4: "Exploitation",
+    dorksTitle: "Google Dorks Professionnel", dorksEngine: "Moteur Dork",
+    dorksExecute: "EXÉCUTER DORK", dorksPreset: "PRÉRÉGLAGES",
+    modulesTitle: "40 Modules du Cours",
+    missionTitleS: "PANEL OPÉRATIONNEL", missionIdLabel: "ID Mission", saveMissionBtn: "ARCHIVER OPÉRATION",
+    mtTitle: "TITRE MISSION", mtId: "ID PROJET", mtAgent: "RESPONSABLE",
+    mtObjective: "OBJECTIF", mtSteps: "ÉTAPES D'ENQUÊTE (Basé OSINT)",
+    mtStep1: "Recherche en Ligne", mtStep2: "Géolocalisation", mtStep3: "Analyse Réseaux",
+    mtStep4: "Collecte Preuves", mtStep5: "Chronologie",
+    mtTools: "OUTILS RECOMMANDÉS", mtNotes: "OBSERVATIONS / NOTES",
+    chatTitle: "Mode Conversation — Dictionnaire Opérationnel",
+    chatDesc: "Ce module répond avec un dictionnaire fixe de termes, protocoles et concepts d'enquête. Cliquez sur un terme ou tapez un mot-clé.",
+    chatStatus: "Module Conversation • Simulé", chatStatusNote: "Basé sur mots-clés, définitions et protocoles préchargés.",
+    welcomeMsg: 'Salutations, agent. Consultez des termes comme <strong>OSINT</strong>, <strong>hypothèse</strong>, <strong>triangulation</strong>, <strong>éthique</strong>, <strong>Watergate</strong>, <strong>Enron</strong>, <strong>RGPD</strong> ou <strong>timeline</strong>.',
+    clearLogBtn: "Effacer Log", queryBtn: "Consulter",
+    linksTitle: "Renseignement Externe",
+    jobsTitle: "Gagnez $1k–$5k/mois",
+    jobs1: "Bug Bounty", jobs1Desc: "HackerOne / Bugcrowd / Intigriti<br>$100–$10 000 par vulnérabilité<br>Google, Facebook, Uber paient bien",
+    jobs2: "Pentest Freelance", jobs2Desc: "Upwork / Toptal / Freelancer<br>$500–$5 000 par projet<br>Fortement demandé par les PME",
+    jobs3: "Certifications", jobs3Desc: "eJPT: $300<br>OSCP: $1 500<br>CEH: $500<br>CompTIA PenTest+: $400",
+    jobs4: "Roadmap 3 Mois", jobs4Desc: "<strong>Mois 1:</strong> Kali, Linux, Recon, Scan<br><strong>Mois 2:</strong> Vulnérabilités Web, Exploitation<br><strong>Mois 3:</strong> Bug Bounty, Recherche emploi, préparation OSCP",
+    footerText: "Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — Agence de X-Intelligence et Opérations Multimodales • Interface statique • enquête organisée, éthique et vérifiable.",
+    userInput: "Tapez un terme, outil ou concept..."
+  },
+  "ru": {
+    heroEyebrow: "[ Безопасная Сеть ] • [ Операционное Ядро ] • [ Удаленное Расследование ]",
+    heroStrong: "Агентство X-Разведки и Мультимодальных Операций",
+    heroDesc: "Визуальный портал для организации расследований, доказательного мышления, OSINT-триажа, геолокации, хронологии дел и этических протоколов.",
+    panel1Title: "Центральный Штаб",
+    panel1Desc: "Центральный штаб для следователей. Здесь интуиция встречается с точностью.",
+    badge1: "OSINT", badge1Desc: "Расширенные поиски, Dorks, перекрестные источники.",
+    badge2: "Гео", badge2Desc: "Карты, Земля и Street View как расширение глаз.",
+    badge3: "Данные", badge3Desc: "Паттерны, сети, профили, сигналы и корреляция.",
+    badge4: "Хронология", badge4Desc: "Временная шкала для обнаружения пробелов.",
+    consoleTitle: "Консоль Состояния",
+    boot1: "Безопасный канал инициализирован",
+    boot2: "Модули OSINT загружены",
+    boot3: "Этические правила установлены",
+    boot4: "Разговорный словарь доступен",
+    boot5: "Готов к организованному расследованию.",
+    navHome: "Главная", navOsint: "OSINT", navTerm: "Терминал", navKali: "Kali",
+    navDorks: "Дорки", navModules: "Модули", navMission: "Миссия", navChat: "Чат",
+    navLinks: "Ссылки", navJobs: "Работа",
+    homeTitle: "ЦЕНТРАЛЬНЫЙ ШТАБ",
+    homeFeature1: "Исполнитель Google Dorks", homeDesc1: "Профессиональный движок продвинутых дорков с результатами в реальном времени.",
+    homeFeature2: "Email-Разведка", homeDesc2: "Полный анализ: утечки, соцсети, репутация, геолокация.",
+    homeFeature3: "Разведка Доменов", homeDesc3: "Поддомены, технологический стек, открытые директории, отпечатки.",
+    osintTitle: "ОПЕРАЦИОННЫЙ ЦЕНТР OSINT",
+    emailTitle: "Email-Разведка", emailBtn: "ВЫПОЛНИТЬ РАЗВЕДКУ",
+    domainTitle: "Перечисление Доменов", domainBtn: "ПЕРЕЧИСЛИТЬ",
+    phoneTitle: "Телефонная Разведка", phoneBtn: "АНАЛИЗИРОВАТЬ",
+    termTitle: "ТЕРМИНАЛ AXIOM",
+    kaliTitle: "KALI LINUX - Установка и 100+ Инструментов",
+    kaliInstall: "Установка Kali 2024", kaliTools: "Основные Инструменты", kaliArsenal: "Полный Арсенал Kali",
+    pentestTitle: "Полные Этапы Пентеста",
+    phase1: "Разведка", phase2: "Сканирование", phase3: "Брутфорс", phase4: "Эксплуатация",
+    dorksTitle: "Профессиональные Google Dorks", dorksEngine: "Движок Дорков",
+    dorksExecute: "ВЫПОЛНИТЬ ДОРК", dorksPreset: "ПРЕСЕТЫ",
+    modulesTitle: "40 Модулей Курса",
+    missionTitleS: "ОПЕРАЦИОННАЯ ПАНЕЛЬ", missionIdLabel: "ID Миссии", saveMissionBtn: "АРХИВИРОВАТЬ ОПЕРАЦИЮ",
+    mtTitle: "НАЗВАНИЕ МИССИИ", mtId: "ID ПРОЕКТА", mtAgent: "ОТВЕТСТВЕННЫЙ",
+    mtObjective: "ЦЕЛЬ", mtSteps: "ЭТАПЫ РАССЛЕДОВАНИЯ (OSINT)",
+    mtStep1: "Онлайн Поиск", mtStep2: "Геолокация", mtStep3: "Анализ Сетей",
+    mtStep4: "Сбор Доказательств", mtStep5: "Хронология",
+    mtTools: "РЕКОМЕНДУЕМЫЕ ИНСТРУМЕНТЫ", mtNotes: "НАБЛЮДЕНИЯ / ЗАМЕТКИ",
+    chatTitle: "Режим Чата — Операционный Словарь",
+    chatDesc: "Этот модуль отвечает на основе фиксированного словаря терминов, протоколов и концепций расследования.",
+    chatStatus: "Модуль Чата • Симуляция", chatStatusNote: "Основано на ключевых словах, определениях и предзагруженных протоколах.",
+    welcomeMsg: 'Приветствую, агент. Спрашивайте о <strong>OSINT</strong>, <strong>гипотезе</strong>, <strong>триангуляции</strong>, <strong>этике</strong>, <strong>Уотергейт</strong>, <strong>Enron</strong>, <strong>GDPR</strong> или <strong>таймлайне</strong>.',
+    clearLogBtn: "Очистить Лог", queryBtn: "Запрос",
+    linksTitle: "Внешняя Разведка",
+    jobsTitle: "Зарабатывайте $1k–$5k/мес",
+    jobs1: "Bug Bounty", jobs1Desc: "HackerOne / Bugcrowd / Intigriti<br>$100–$10 000 за уязвимость<br>Google, Facebook, Uber платят хорошо",
+    jobs2: "Фриланс Пентест", jobs2Desc: "Upwork / Toptal / Freelancer<br>$500–$5 000 за проект<br>Высокий спрос у МСП",
+    jobs3: "Сертификации", jobs3Desc: "eJPT: $300<br>OSCP: $1 500<br>CEH: $500<br>CompTIA PenTest+: $400",
+    jobs4: "План на 3 Месяца", jobs4Desc: "<strong>Месяц 1:</strong> Kali, Linux, Разведка, Сканирование<br><strong>Месяц 2:</strong> Web-уязвимости, Эксплуатация<br><strong>Месяц 3:</strong> Bug Bounty, Поиск работы, подготовка OSCP",
+    footerText: "Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — Агентство X-Разведки и Мультимодальных Операций • Статический интерфейс • организованное, этичное, проверяемое расследование.",
+    userInput: "Введите термин, инструмент или концепцию..."
+  },
+  "ja": {
+    heroEyebrow: "[ セキュアネットワーク ] • [ 運用コア ] • [ 遠隔調査 ]",
+    heroStrong: "Xインテリジェンス機関 & マルチモーダル運用",
+    heroDesc: "調査の組織化、証拠に基づく推論、OSINTトリアージ、ジオロケーション、事件の時系列、倫理的プロトコルのためのビジュアルポータル。",
+    panel1Title: "中央本部",
+    panel1Desc: "捜査官のための中央本部。直感が精度と出会う場所。",
+    badge1: "OSINT", badge1Desc: "高度な検索、Dorks、情報源のクロスリファレンス。",
+    badge2: "地理", badge2Desc: "マップ、Earth、ストリートビューを目の延長として使用。",
+    badge3: "データ", badge3Desc: "パターン、ネットワーク、プロファイル、シグナルと相関。",
+    badge4: "時系列", badge4Desc: "ギャップを検出するタイムライン。",
+    consoleTitle: "ステータスコンソール",
+    boot1: "セキュアチャネル初期化完了",
+    boot2: "OSINTモジュール読み込み完了",
+    boot3: "倫理ルール適用完了",
+    boot4: "会話辞書利用可能",
+    boot5: "組織的な調査の準備完了。",
+    navHome: "ホーム", navOsint: "OSINT", navTerm: "ターミナル", navKali: "Kali",
+    navDorks: "ドークス", navModules: "モジュール", navMission: "ミッション", navChat: "チャット",
+    navLinks: "リンク", navJobs: "仕事",
+    homeTitle: "中央本部",
+    homeFeature1: "Google Dorks実行", homeDesc1: "リアルタイム結果の高度なドークス用プロフェッショナルエンジン。",
+    homeFeature2: "メールインテリジェンス", homeDesc2: "リーク、ソーシャルネットワーク、評判、ジオロケーションの完全分析。",
+    homeFeature3: "ドメイン偵察", homeDesc3: "サブドメイン、技術スタック、公開ディレクトリ、フィンガープリント。",
+    osintTitle: "OSINT運用センター",
+    emailTitle: "メール偵察", emailBtn: "偵察実行",
+    domainTitle: "ドメイン列挙", domainBtn: "列挙",
+    phoneTitle: "電話インテリジェンス", phoneBtn: "分析",
+    termTitle: "AXIOMターミナル",
+    kaliTitle: "KALI LINUX - インストールと100以上のツール",
+    kaliInstall: "Kali 2024インストール", kaliTools: "必須ツール", kaliArsenal: "完全なKaliアーセナル",
+    pentestTitle: "完全なペンテストフェーズ",
+    phase1: "偵察", phase2: "スキャン", phase3: "ブルートフォース", phase4: "エクスプロイト",
+    dorksTitle: "Google Dorksプロフェッショナル", dorksEngine: "Dorkエンジン",
+    dorksExecute: "DORK実行", dorksPreset: "プリセット",
+    modulesTitle: "40コースモジュール",
+    missionTitleS: "オペレーショナルパネル", missionIdLabel: "ミッションID", saveMissionBtn: "操作をアーカイブ",
+    mtTitle: "ミッションタイトル", mtId: "プロジェクトID", mtAgent: "責任者",
+    mtObjective: "目的", mtSteps: "調査手順（OSINTベース）",
+    mtStep1: "オンライン調査", mtStep2: "ジオロケーション", mtStep3: "ネットワーク分析",
+    mtStep4: "証拠収集", mtStep5: "タイムライン",
+    mtTools: "推奨ツール", mtNotes: "観察・メモ",
+    chatTitle: "チャットモード — 運用辞書",
+    chatDesc: "このモジュールは、用語、プロトコル、調査概念の固定辞書に基づいて応答します。",
+    chatStatus: "チャットモジュール • シミュレーション", chatStatusNote: "キーワード、定義、プリロードされたプロトコルに基づきます。",
+    welcomeMsg: 'ようこそ、エージェント。<strong>OSINT</strong>、<strong>仮説</strong>、<strong>三角測量</strong>、<strong>倫理</strong>、<strong>ウォーターゲート</strong>、<strong>エンロン</strong>、<strong>GDPR</strong>、<strong>タイムライン</strong>などの用語を調べてください。',
+    clearLogBtn: "ログをクリア", queryBtn: "照会",
+    linksTitle: "外部インテリジェンス",
+    jobsTitle: "月収$1k～$5kを得る",
+    jobs1: "バグバウンティ", jobs1Desc: "HackerOne / Bugcrowd / Intigriti<br>脆弱性あたり$100～$10,000<br>Google、Facebook、Uberが高額報酬",
+    jobs2: "フリーランスペンテスト", jobs2Desc: "Upwork / Toptal / Freelancer<br>プロジェクトあたり$500～$5,000<br>中小企業に人気",
+    jobs3: "認定資格", jobs3Desc: "eJPT: $300<br>OSCP: $1,500<br>CEH: $500<br>CompTIA PenTest+: $400",
+    jobs4: "3ヶ月ロードマップ", jobs4Desc: "<strong>1ヶ月目:</strong> Kali, Linux, 偵察, スキャン<br><strong>2ヶ月目:</strong> Web脆弱性, エクスプロイト<br><strong>3ヶ月目:</strong> バグバウンティ, 就職活動, OSCP準備",
+    footerText: "Ａ.Ｘ.Ｉ.Ｏ.Ｍ. — Xインテリジェンス機関 & マルチモーダル運用 • 静的インターフェース • 組織的、倫理的、監査可能な調査。",
+    userInput: "用語、ツール、概念を入力..."
+  }
+};
+
+// ===== LANGUAGE SELECTOR =====
+let currentLang = "en";
+
+function setLanguage(lang) {
+  currentLang = lang;
+  const t = translations[lang];
+  if (!t) return;
+
+  document.getElementById("langIndicator").textContent = lang.toUpperCase();
+  
+  // Update all elements with IDs matching translation keys
+  Object.keys(t).forEach(key => {
+    const el = document.getElementById(key);
+    if (el) el.innerHTML = t[key];
+  });
+
+  // Update lang buttons
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.lang === lang);
+  });
+
+  // Update user input placeholder
+  const userInput = document.getElementById("userInput");
+  if (userInput && t.userInput) userInput.placeholder = t.userInput;
+
+  // Update chat welcome
+  const welcomeMsg = document.getElementById("welcomeMsg");
+  if (welcomeMsg) welcomeMsg.innerHTML = t.welcomeMsg;
+
+  // Regenerate modules
+  renderModules();
+  // Regenerate dictionary
+  renderDictionary();
+}
+
+document.querySelectorAll(".lang-btn").forEach(btn => {
+  btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+});
+
+// ===== ADMIN LOGIN =====
+function adminLogin() {
+  const user = document.getElementById("adminUser").value.trim();
+  const pass = document.getElementById("adminPass").value.trim();
+  if (user === "admin" && pass === "admin") {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("mainSystem").style.display = "block";
+    bootSequence();
+  } else {
+    alert("Credenciais inválidas! Use admin / admin");
+  }
+}
+
+// Allow Enter key on login
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("adminPass").addEventListener("keydown", e => {
+    if (e.key === "Enter") adminLogin();
+  });
+  document.getElementById("adminUser").addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("adminPass").focus();
+  });
+  document.getElementById("userInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") handleChat();
+  });
+});
+
+// ===== BOOT SEQUENCE =====
+function bootSequence() {
+  const bootLog = document.getElementById("bootLog");
+  setTimeout(() => {
+    bootLog.innerHTML += '<div class="line"><span class="dim">[OK]</span> System fully operational. Welcome, ADMIN.</div>';
+  }, 800);
+}
+
+// ===== NAVIGATION =====
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  const target = document.getElementById(id);
+  if (target) target.classList.add("active");
+
+  document.querySelectorAll(".nav-inner button").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(`.nav-inner button`).forEach(b => {
+    if (b.getAttribute("onclick")?.includes(id)) b.classList.add("active");
+  });
+}
+
+// ===== 40 MODULES =====
+const modulesData = [
+  {en:"Web Overview & HTML5 Basics", pt:"Visão Geral da Web & HTML5 Básico", fr:"Aperçu Web & Bases HTML5", ru:"Обзор Web и Основы HTML5", ja:"Web概要とHTML5基礎"},
+  {en:"HTML Structure: Headings, Paragraphs, Links", pt:"Estrutura HTML: Títulos, Parágrafos, Links", fr:"Structure HTML: Titres, Paragraphes, Liens", ru:"Структура HTML: Заголовки, Параграфы, Ссылки", ja:"HTML構造: 見出し、段落、リンク"},
+  {en:"Images, Tables & Lists", pt:"Imagens, Tabelas e Listas", fr:"Images, Tableaux et Listes", ru:"Изображения, Таблицы и Списки", ja:"画像、テーブル、リスト"},
+  {en:"Forms & Input Validation", pt:"Formulários e Validação de Entrada", fr:"Formulaires et Validation", ru:"Формы и Валидация", ja:"フォームと入力バリデーション"},
+  {en:"Semantic HTML & Accessibility", pt:"HTML Semântico e Acessibilidade", fr:"HTML Sémantique et Accessibilité", ru:"Семантический HTML и Доступность", ja:"セマンティックHTMLとアクセシビリティ"},
+  {en:"CSS3 Selectors & Box Model", pt:"Seletores CSS3 e Modelo de Caixa", fr:"Sélecteurs CSS3 et Modèle de Boîte", ru:"Селекторы CSS3 и Блочная модель", ja:"CSS3セレクタとボックスモデル"},
+  {en:"Flexbox & Grid Layout", pt:"Flexbox e Grid Layout", fr:"Flexbox et Grid Layout", ru:"Flexbox и Grid Layout", ja:"Flexboxとグリッドレイアウト"},
+  {en:"Responsive Design & Media Queries", pt:"Design Responsivo e Media Queries", fr:"Design Responsive et Media Queries", ru:"Адаптивный дизайн и Медиа-запросы", ja:"レスポンシブデザインとメディアクエリ"},
+  {en:"CSS Animations & Transitions", pt:"Animações e Transições CSS", fr:"Animations et Transitions CSS", ru:"CSS-анимации и Переходы", ja:"CSSアニメーションとトランジション"},
+  {en:"CSS Variables & Custom Properties", pt:"Variáveis CSS e Propriedades Personalizadas", fr:"Variables CSS et Propriétés Personnalisées", ru:"CSS-переменные и Пользовательские свойства", ja:"CSS変数とカスタムプロパティ"},
+  {en:"JS Basics: Variables & Data Types", pt:"JS Básico: Variáveis e Tipos de Dados", fr:"JS Bases: Variables et Types de Données", ru:"Основы JS: Переменные и Типы данных", ja:"JavaScript基礎: 変数とデータ型"},
+  {en:"Functions, Scope & Hoisting", pt:"Funções, Escopo e Hoisting", fr:"Fonctions, Portée et Hoisting", ru:"Функции, Область видимости и Поднятие", ja:"関数、スコープ、ホイスティング"},
+  {en:"Arrays & Objects", pt:"Arrays e Objetos", fr:"Tableaux et Objets", ru:"Массивы и Объекты", ja:"配列とオブジェクト"},
+  {en:"DOM Manipulation", pt:"Manipulação do DOM", fr:"Manipulation du DOM", ru:"Манипуляция DOM", ja:"DOM操作"},
+  {en:"Events & Event Listeners", pt:"Eventos e Event Listeners", fr:"Événements et Écouteurs", ru:"События и Обработчики событий", ja:"イベントとイベントリスナー"},
+  {en:"ES6+: Arrow Functions, Destructuring, Spread", pt:"ES6+: Arrow Functions, Desestruturação, Spread", fr:"ES6+: Fonctions Fléchées, Destructuration, Spread", ru:"ES6+: Стрелочные функции, Деструктуризация, Spread", ja:"ES6+: アロー関数、分割代入、スプレッド"},
+  {en:"Promises, Async/Await & Fetch API", pt:"Promises, Async/Await e Fetch API", fr:"Promesses, Async/Await et Fetch API", ru:"Промисы, Async/Await и Fetch API", ja:"Promise、Async/Await、Fetch API"},
+  {en:"JSON & Local Storage", pt:"JSON e Local Storage", fr:"JSON et Stockage Local", ru:"JSON и Локальное хранилище", ja:"JSONとローカルストレージ"},
+  {en:"Error Handling & Debugging", pt:"Tratamento de Erros e Debugging", fr:"Gestion d'Erreurs et Débogage", ru:"Обработка ошибок и Отладка", ja:"エラーハンドリングとデバッグ"},
+  {en:"Regular Expressions", pt:"Expressões Regulares", fr:"Expressions Régulières", ru:"Регулярные выражения", ja:"正規表現"},
+  {en:"HTTP & Web Security Headers Overview", pt:"Visão Geral HTTP e Cabeçalhos de Segurança Web", fr:"Aperçu HTTP et En-têtes de Sécurité Web", ru:"Введение в HTTP и заголовки безопасности Web", ja:"HTTPとWebセキュリティヘッダーの概要"},
+  {en:"Cross-Site Scripting (XSS) Basics", pt:"Cross-Site Scripting (XSS) Básico", fr:"Cross-Site Scripting (XSS) Bases", ru:"Основы Межсайтового скриптинга (XSS)", ja:"クロスサイトスクリプティング（XSS）基礎"},
+  {en:"SQL Injection Basics", pt:"SQL Injection Básico", fr:"Injection SQL Bases", ru:"Основы SQL-инъекций", ja:"SQLインジェクション基礎"},
+  {en:"Command Injection & File Inclusion", pt:"Injeção de Comandos e Inclusão de Arquivos", fr:"Injection de Commandes et Inclusion de Fichiers", ru:"Инъекция команд и Включение файлов", ja:"コマンドインジェクションとファイルインクルージョン"},
+  {en:"Authentication & Session Management", pt:"Autenticação e Gerenciamento de Sessão", fr:"Authentification et Gestion de Session", ru:"Аутентификация и Управление сессиями", ja:"認証とセッション管理"},
+  {en:"CSRF & Clickjacking Protection", pt:"Proteção CSRF e Clickjacking", fr:"Protection CSRF et Clickjacking", ru:"Защита от CSRF и Кликджекинга", ja:"CSRFとクリックジャッキング対策"},
+  {en:"CSP, CORS & Security Policies", pt:"CSP, CORS e Políticas de Segurança", fr:"CSP, CORS et Politiques de Sécurité", ru:"CSP, CORS и Политики безопасности", ja:"CSP、CORS、セキュリティポリシー"},
+  {en:"Node.js & Express Intro", pt:"Introdução ao Node.js e Express", fr:"Introduction à Node.js et Express", ru:"Введение в Node.js и Express", ja:"Node.jsとExpressの概要"},
+  {en:"REST API Design & Development", pt:"Design e Desenvolvimento de REST API", fr:"Conception et Développement REST API", ru:"Проектирование и разработка REST API", ja:"REST APIの設計と開発"},
+  {en:"JWT Authentication & Authorization", pt:"Autenticação e Autorização JWT", fr:"Authentification et Autorisation JWT", ru:"JWT Аутентификация и Авторизация", ja:"JWT認証と認可"},
+  {en:"Burp Suite: Intercept & Repeater", pt:"Burp Suite: Interceptação e Repeater", fr:"Burp Suite: Interception et Repeater", ru:"Burp Suite: Перехват и Повтор", ja:"Burp Suite: インターセプトとリピータ"},
+  {en:"Nmap for Web Recon", pt:"Nmap para Reconhecimento Web", fr:"Nmap pour Recon Web", ru:"Nmap для веб-разведки", ja:"Web偵察のためのNmap"},
+  {en:"Dirbusting & Parameter Discovery", pt:"Dirbusting e Descoberta de Parâmetros", fr:"Dirbusting et Découverte de Paramètres", ru:"Dirbusting и Поиск параметров", ja:"ディレクトリバスティングとパラメータ発見"},
+  {en:"Brute Force with Hydra & ffuf", pt:"Força Bruta com Hydra e ffuf", fr:"Force Brute avec Hydra et ffuf", ru:"Брутфорс с Hydra и ffuf", ja:"Hydraとffufによるブルートフォース"},
+  {en:"Metasploit for Web Exploitation", pt:"Metasploit para Exploração Web", fr:"Metasploit pour Exploitation Web", ru:"Metasploit для веб-эксплуатации", ja:"WebエクスプロイトのためのMetasploit"},
+  {en:"Reverse Shells & Payloads", pt:"Reverse Shells e Payloads", fr:"Reverse Shells et Payloads", ru:"Реверс-шеллы и Пейлоады", ja:"リバースシェルとペイロード"},
+  {en:"Post-Exploitation & Privilege Escalation", pt:"Pós-Exploração e Elevação de Privilégio", fr:"Post-Exploitation et Élévation de Privilèges", ru:"Пост-эксплуатация и Повышение привилегий", ja:"ポストエクスプロイトと権限昇格"},
+  {en:"WAF Bypass Techniques", pt:"Técnicas de Bypass de WAF", fr:"Techniques de Contournement WAF", ru:"Техники обхода WAF", ja:"WAFバイパス技術"},
+  {en:"Bug Bounty Methodology & Reporting", pt:"Metodologia Bug Bounty e Relatórios", fr:"Méthodologie Bug Bounty et Rapports", ru:"Методология Bug Bounty и Отчетность", ja:"バグバウンティの方法論と報告"},
+  {en:"Final Project: Full Pentest & Fix Lab", pt:"Projeto Final: Pentest Completo e Laboratório de Correções", fr:"Projet Final: Pentest Complet et Lab de Corrections", ru:"Финальный проект: Полный пентест и лаборатория исправлений", ja:"最終プロジェクト: 完全な侵入テストと修正ラボ"}
+];
+
+function renderModules() {
+  const grid = document.getElementById("moduleGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  modulesData.forEach((mod, i) => {
+    const name = mod[currentLang] || mod.en;
+    const div = document.createElement("div");
+    div.className = "module-item";
+    div.innerHTML = `<div class="mod-title">M${i+1}: ${name}</div><div class="mod-desc">${name}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+// ===== DICTIONARY FOR CHAT =====
+const dictionary = {
+  OSINT: {en:"Open Source Intelligence — gathering info from public sources.", pt:"Inteligência de Fontes Abertas — coleta de informações de fontes públicas.", fr:"Renseignement de Sources Ouvertes — collecte d'infos via sources publiques.", ru:"Разведка по открытым источникам — сбор информации из публичных источников.", ja:"オープンソースインテリジェンス — 公開情報源からの情報収集。"},
+  hipótese: {en:"Hypothesis — a testable proposition about a case or target.", pt:"Hipótese — uma proposição testável sobre um caso ou alvo.", fr:"Hypothèse — une proposition testable sur un cas ou cible.", ru:"Гипотеза — проверяемое предположение о деле или цели.", ja:"仮説 — ケースや標的に関する検証可能な命題。"},
+  hypothesis: {en:"Hypothesis — a testable proposition about a case or target.", pt:"Hipótese — uma proposição testável sobre um caso ou alvo.", fr:"Hypothèse — une proposition testable sur un cas ou cible.", ru:"Гипотеза — проверяемое предположение о деле или цели.", ja:"仮説 — ケースや標的に関する検証可能な命題。"},
+  triangulação: {en:"Triangulation — cross-referencing multiple sources to verify data.", pt:"Triangulação — cruzamento de múltiplas fontes para verificar dados.", fr:"Triangulation — recoupement de sources multiples pour vérifier les données.", ru:"Триангуляция — перекрестная проверка нескольких источников.", ja:"三角測量 — 複数の情報源を相互参照してデータを検証。"},
+  triangulation: {en:"Triangulation — cross-referencing multiple sources to verify data.", pt:"Triangulação — cruzamento de múltiplas fontes para verificar dados.", fr:"Triangulation — recoupement de sources multiples pour vérifier les données.", ru:"Триангуляция — перекрестная проверка нескольких источников.", ja:"三角測量 — 複数の情報源を相互参照してデータを検証。"},
+  ética: {en:"Ethics — principles that guide responsible OSINT.", pt:"Ética — princípios que guiam o OSINT responsável.", fr:"Éthique — principes guidant l'OSINT responsable.", ru:"Этика — принципы ответственного OSINT.", ja:"倫理 — 責任あるOSINTを導く原則。"},
+  ethics: {en:"Ethics — principles that guide responsible OSINT.", pt:"Ética — princípios que guiam o OSINT responsável.", fr:"Éthique — principes guidant l'OSINT responsable.", ru:"Этика — принципы ответственного OSINT.", ja:"倫理 — 責任あるOSINTを導く原則。"},
+  Watergate: {en:"Watergate — 1972 US political scandal demonstrates OSINT methodology.", pt:"Watergate — escândalo político americano de 1972, demonstra metodologia OSINT.", fr:"Watergate — scandale politique américain de 1972, démontre la méthodologie OSINT.", ru:"Уотергейт — политический скандал в США 1972 года, демонстрирует методологию OSINT.", ja:"ウォーターゲート — 1972年の米国政治スキャンダル、OSINT手法を示す。"},
+  Enron: {en:"Enron — 2001 corporate scandal; OSINT revealed anomalies through public data.", pt:"Enron — escândalo corporativo de 2001; OSINT revelou anomalias através de dados públicos.", fr:"Enron — scandale d'entreprise de 2001; l'OSINT a révélé des anomalies via données publiques.", ru:"Enron — корпоративный скандал 2001 года; OSINT выявил аномалии через публичные данные.", ja:"エンロン — 2001年の企業スキャンダル。公開データを通じてOSINTが異常を発見。"},
+  GDPR: {en:"GDPR — General Data Protection Regulation, EU privacy law.", pt:"LGPD/LGDP — Lei Geral de Proteção de Dados.", fr:"RGPD — Règlement Général sur la Protection des Données, loi européenne.", ru:"GDPR — Общий регламент по защите данных, закон ЕС о конфиденциальности.", ja:"GDPR — 一般データ保護規則、EUプライバシー法。"},
+  LGPD: {en:"LGPD — Brazilian General Data Protection Law.", pt:"LGPD — Lei Geral de Proteção de Dados brasileira.", fr:"LGPD — Loi générale brésilienne sur la protection des données.", ru:"LGPD — Бразильский общий закон о защите данных.", ja:"LGPD — ブラジルの一般データ保護法。"},
+  timeline: {en:"Timeline — chronological sequence of events to detect gaps.", pt:"Linha do tempo — sequência cronológica de eventos para detectar lacunas.", fr:"Chronologie — séquence chronologique pour détecter des lacunes.", ru:"Таймлайн — хронологическая последовательность событий для обнаружения пробелов.", ja:"タイムライン — ギャップを検出するための時系列イベント。"},
+  nmap: {en:"Nmap — network scanner for host discovery and service enumeration.", pt:"Nmap — scanner de rede para descoberta de hosts e enumeração de serviços.", fr:"Nmap — scanner réseau pour la découverte d'hôtes et l'énumération de services.", ru:"Nmap — сетевой сканер для обнаружения хостов и перечисления сервисов.", ja:"Nmap — ホスト発見とサービス列挙のためのネットワークスキャナー。"},
+  hydra: {en:"Hydra — parallelized login cracker for network authentication brute-force.", pt:"Hydra — cracker de login paralelizado para força bruta em autenticação de rede.", fr:"Hydra — craqueur de login parallélisé pour brute-force d'authentification réseau.", ru:"Hydra — параллельный взломщик логинов для брутфорса сетевой аутентификации.", ja:"Hydra — ネットワーク認証ブルートフォース用の並列ログインクラッカー。"},
+  sqlmap: {en:"sqlmap — automatic SQL injection detection and exploitation tool.", pt:"sqlmap — ferramenta automática de detecção e exploração de SQL injection.", fr:"sqlmap — outil automatique de détection et d'exploitation d'injection SQL.", ru:"sqlmap — инструмент автоматического обнаружения и эксплуатации SQL-инъекций.", ja:"sqlmap — 自動SQLインジェクション検出・エクスプロイトツール。"},
+  burpsuite: {en:"Burp Suite — web application security testing platform.", pt:"Burp Suite — plataforma de teste de segurança de aplicações web.", fr:"Burp Suite — plateforme de test de sécurité d'applications web.", ru:"Burp Suite — платформа для тестирования безопасности веб-приложений.", ja:"Burp Suite — Webアプリケーションセキュリティテストプラットフォーム。"},
+  metasploit: {en:"Metasploit — penetration testing framework for exploit development.", pt:"Metasploit — framework de teste de penetração para desenvolvimento de exploits.", fr:"Metasploit — framework de test d'intrusion pour le développement d'exploits.", ru:"Metasploit — фреймворк для тестирования на проникновение и разработки эксплойтов.", ja:"Metasploit — エクスプロイト開発のためのペネトレーションテストフレームワーク。"},
+  google: {en:"Google Dorks — advanced search operators to find exposed info.", pt:"Google Dorks — operadores de busca avançados para encontrar informações expostas.", fr:"Google Dorks — opérateurs de recherche avancés pour trouver des infos exposées.", ru:"Google Dorks — продвинутые операторы поиска для поиска открытой информации.", ja:"Google Dorks — 公開情報を見つけるための高度な検索演算子。"},
+  dorks: {en:"Google Dorks — advanced search operators to find exposed info.", pt:"Google Dorks — operadores de busca avançados para encontrar informações expostas.", fr:"Google Dorks — opérateurs de recherche avancés pour trouver des infos exposées.", ru:"Google Dorks — продвинутые операторы поиска для поиска открытой информации.", ja:"Google Dorks — 公開情報を見つけるための高度な検索演算子。"},
+  phishing: {en:"Phishing — social engineering attack to steal credentials via fake pages.", pt:"Phishing — ataque de engenharia social para roubar credenciais via páginas falsas.", fr:"Phishing — attaque d'ingénierie sociale pour voler des identifiants via de fausses pages.", ru:"Фишинг — атака социальной инженерии для кражи учетных данных через поддельные страницы.", ja:"フィッシング — 偽ページ経由で認証情報を盗むソーシャルエンジニアリング攻撃。"},
+  xss: {en:"XSS (Cross-Site Scripting) — injection of malicious scripts into web pages.", pt:"XSS (Cross-Site Scripting) — injeção de scripts maliciosos em páginas web.", fr:"XSS (Cross-Site Scripting) — injection de scripts malveillants dans des pages web.", ru:"XSS (Межсайтовый скриптинг) — внедрение вредоносных скриптов в веб-страницы.", ja:"XSS（クロスサイトスクリプティング）— Webページへの悪意あるスクリプト注入。"}
+};
+
+function renderDictionary() {
+  const list = document.getElementById("dictionaryList");
+  if (!list) return;
+  list.innerHTML = "";
+  Object.keys(dictionary).forEach(term => {
+    const btn = document.createElement("button");
+    btn.className = "dict-btn";
+    btn.textContent = term;
+    btn.addEventListener("click", () => {
+      sendToChat(term);
     });
+    list.appendChild(btn);
+  });
+}
 
-    function sendQuery(){
-      const q = userInput.value.trim();
-      if(!q) return;
-      addBubble(q, 'user');
-      addBubble(answerQuery(q), 'bot');
-      userInput.value = '';
-      userInput.focus();
+// ===== CHAT SYSTEM =====
+function sendToChat(term) {
+  const t = currentLang;
+  const entry = dictionary[term];
+  const response = entry ? (entry[t] || entry.en) : `No entry found for "${term}".`;
+  const log = document.getElementById("chatLog");
+  
+  const userBubble = document.createElement("div");
+  userBubble.className = "bubble user";
+  userBubble.textContent = term;
+  log.appendChild(userBubble);
+  
+  const botBubble = document.createElement("div");
+  botBubble.className = "bubble bot";
+  botBubble.textContent = response;
+  log.appendChild(botBubble);
+  
+  log.scrollTop = log.scrollHeight;
+}
+
+function handleChat() {
+  const input = document.getElementById("userInput");
+  const term = input.value.trim().toLowerCase();
+  if (!term) return;
+  input.value = "";
+  
+  // Check dictionary (case-insensitive key match)
+  const found = Object.keys(dictionary).find(k => k.toLowerCase() === term);
+  if (found) {
+    sendToChat(found);
+  } else {
+    sendToChat(term);
+  }
+}
+
+document.getElementById("sendBtn").addEventListener("click", handleChat);
+document.getElementById("clearChat").addEventListener("click", () => {
+  const log = document.getElementById("chatLog");
+  log.innerHTML = `<div class="bubble bot" id="welcomeMsg">${translations[currentLang].welcomeMsg}</div>`;
+});
+
+// ===== OSINT TOOLS =====
+function runEmailOSINT() {
+  const target = document.getElementById("emailTarget").value.trim();
+  if (!target) { alert("Enter an email address."); return; }
+  const results = document.getElementById("emailResults");
+  results.style.display = "block";
+  results.innerHTML = `[OSINT Email Recon] target: ${target}
+├─ [BreachCheck] No known breaches found in local DB.
+├─ [SocialLookup] Profiles: (simulated) linkedin, github, twitter
+├─ [Reputation] Score: Neutral (73/100)
+└─ [Geolocation] IP origin: (simulated) São Paulo, BR
+
+⚠️  This is a simulation. Use actual OSINT tools for real data.`;
+}
+
+function runDomainOSINT() {
+  const target = document.getElementById("domainTarget").value.trim();
+  if (!target) { alert("Enter a domain."); return; }
+  const results = document.getElementById("domainResults");
+  results.style.display = "block";
+  results.innerHTML = `[Domain Enumeration] target: ${target}
+├─ [Subdomains] www, mail, admin, dev, api (simulated)
+├─ [TechStack] nginx, PHP, MySQL
+├─ [Directories] /admin, /backup, /api/v1, /config
+├─ [Fingerprint] Server: nginx/1.24.0
+└─ [DNS] A: 192.168.x.x (simulated)
+
+⚠️  This is a simulation for educational purposes.`;
+}
+
+function runPhoneOSINT() {
+  const target = document.getElementById("phoneTarget").value.trim();
+  if (!target) { alert("Enter a phone number."); return; }
+  const results = document.getElementById("phoneResults");
+  results.style.display = "block";
+  results.innerHTML = `[Phone Intelligence] target: ${target}
+├─ [Carrier] Simulated Carrier
+├─ [Region] Brazil (SP)
+├─ [Apps] WhatsApp, Telegram (simulated)
+├─ [Reputation] Clean
+└─ [Risk] Low
+
+⚠️  This is a simulation. Use proper OSINT tools.`;
+}
+
+// ===== DORKS =====
+function executeDork() {
+  const input = document.getElementById("dorkInput").value.trim();
+  if (!input) { alert("Enter a dork query."); return; }
+  const output = document.getElementById("dorkOutput");
+  output.style.display = "block";
+  output.innerHTML = `🔍 Executing dork: "${input}"
+├─ [Google] Results: ~0 (simulated)
+├─ [Bing] Results: ~0 (simulated)
+├─ [Yandex] Results: ~0 (simulated)
+└─ [DuckDuckGo] Results: ~0 (simulated)
+
+⚠️  This is a simulation. Use actual search engines for real results.`;
+}
+
+function loadPresetDorks() {
+  const presets = [
+    'inurl:admin filetype:sql "password"',
+    'site:*.gov.br intitle:"index of"',
+    'inurl:wp-content/uploads filetype:php',
+    'intitle:"webcam" inurl:/view.shtml',
+    'filetype:env "DB_PASSWORD"',
+    'inurl:/api/v1 "swagger"'
+  ];
+  const pick = presets[Math.floor(Math.random() * presets.length)];
+  document.getElementById("dorkInput").value = pick;
+}
+
+// ===== MISSION =====
+function saveOperation() {
+  const content = document.getElementById("missionContent").value.trim();
+  if (!content) { alert("Write something before saving."); return; }
+  localStorage.setItem("axiom_mission", content);
+  alert("✅ Operation archived locally.");
+}
+
+// ===== TERMINAL =====
+function handleTerminal(e) {
+  if (e.key === "Enter") {
+    const input = e.target.value.trim();
+    if (!input) return;
+    const term = document.getElementById("mainTerminal");
+    term.innerHTML += `<div style="color:#7da78d;">axiom@core:~$ ${input}</div>`;
+    
+    if (input.toLowerCase() === "help") {
+      term.innerHTML += `<div style="color:var(--accent-green);">Available: osint, dork, status, help, clear, modules</div>`;
+    } else if (input.toLowerCase() === "clear") {
+      term.innerHTML = `<div style="color:var(--accent-green);">=== A.X.I.O.M. Terminal - ADMIN MODE ===</div><div>Terminal cleared.</div><div style="color:#caffde;">></div>`;
+    } else if (input.toLowerCase() === "status") {
+      term.innerHTML += `<div style="color:#caffde;">System: ONLINE | OSINT: ACTIVE | Memory: 23% | Uptime: 0h 42m</div>`;
+    } else {
+      term.innerHTML += `<div style="color:#7da78d;">Command not recognized: "${input}". Type 'help'.</div>`;
     }
+    
+    term.scrollTop = term.scrollHeight;
+    e.target.value = "";
+  }
+}
 
-    sendBtn.addEventListener('click', sendQuery);
-    userInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') sendQuery(); });
-    clearChat.addEventListener('click', ()=>{
-      chatLog.innerHTML = '<div class="bubble bot">Log limpo. Consulte um termo para continuar.</div>';
-      document.querySelectorAll('.dict-btn').forEach(b=>b.classList.remove('active'));
-    });
+// ===== INIT =====
+document.addEventListener("DOMContentLoaded", () => {
+  renderModules();
+  renderDictionary();
+  setLanguage("pt-BR");
+});
+</script>
 
-    const boot = document.getElementById('bootLog');
-    const extraLines = [
-      '[SYNC] Dicionários metodológicos vinculados',
-      '[SYNC] Protocolos classificados indexados',
-      '[NOTICE] Modo Conversa = respostas fixas, não IA real'
-    ];
-
-    let i = 0;
-    setInterval(()=>{
-      if(i >= extraLines.length) return;
-      const line = document.createElement('div');
-      line.className = 'line';
-      line.innerHTML = `<span class="dim">[INFO]</span> ${extraLines[i]}`;
-      boot.appendChild(line);
-      i++;
-    }, 1100);
-  </script>
+</div>
 </body>
 </html>
